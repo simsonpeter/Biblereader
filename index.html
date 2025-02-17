@@ -137,10 +137,10 @@
     console.log("Today's date:", currentDate); // Debugging log
     let planData = [];
 
-    // Function to format date as DD-MM-YYYY
+    // Function to format date as DD-MM
     function formatDate(date) {
       const [year, month, day] = date.split('-');
-      return `${day}-${month}-${year}`;
+      return `${day}-${month}`;
     }
 
     // Load the plan from the JSON file

@@ -395,27 +395,39 @@
       const calendarDates = document.getElementById('calendar-dates');
       calendarDates.innerHTML = '';
 
+      // Get the current month and year
+      const currentDateObj = new Date(currentDate);
+      const currentMonth = currentDateObj.getMonth(); // 0-based (0 = January, 11 = December)
+      const currentYear = currentDateObj.getFullYear();
+
       planData.forEach(day => {
-        const dateElement = document.createElement('div');
-        dateElement.className = 'calendar-date';
-        dateElement.textContent = formatDate(day.date);
+        const dateObj = new Date(day.date);
+        const dayMonth = dateObj.getMonth();
+        const dayYear = dateObj.getFullYear();
 
-        if (day.date === currentDate) {
-          dateElement.classList.add('today');
+        // Only display dates from the current month and year
+        if (dayMonth === currentMonth && dayYear === currentYear) {
+          const dateElement = document.createElement('div');
+          dateElement.className = 'calendar-date';
+          dateElement.textContent = formatDate(day.date);
+
+          if (day.date === currentDate) {
+            dateElement.classList.add('today');
+          }
+
+          const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
+          const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
+          if (morningCompleted && eveningCompleted) {
+            dateElement.classList.add('completed');
+          }
+
+          dateElement.addEventListener('click', () => {
+            currentDate = day.date;
+            loadPlan(currentDate);
+          });
+
+          calendarDates.appendChild(dateElement);
         }
-
-        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
-        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
-        if (morningCompleted && eveningCompleted) {
-          dateElement.classList.add('completed');
-        }
-
-        dateElement.addEventListener('click', () => {
-          currentDate = day.date;
-          loadPlan(currentDate);
-        });
-
-        calendarDates.appendChild(dateElement);
       });
     }
 

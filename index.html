@@ -103,8 +103,8 @@
     .tamil {
       font-family: 'Lohit Tamil', 'Noto Sans Tamil', Arial, sans-serif;
     }
-    .close-button {
-      background-color: #e74c3c;
+    .toggle-button {
+      background-color: #2980b9;
       color: #fff;
       border: none;
       padding: 5px 10px;
@@ -218,7 +218,7 @@
             <div class="verses" id="morning-verses">
               ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
-            <button class="close-button" onclick="toggleVerses('morning-verses')">மூடு</button>
+            <button class="toggle-button" onclick="toggleVerses('morning-verses', this)">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
             </label>
@@ -228,7 +228,7 @@
             <div class="verses" id="evening-verses">
               ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
-            <button class="close-button" onclick="toggleVerses('evening-verses')">மூடு</button>
+            <button class="toggle-button" onclick="toggleVerses('evening-verses', this)">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
             </label>
@@ -274,10 +274,16 @@
       updateTotalProgress();
     }
 
-    // Function to toggle verses visibility
-    function toggleVerses(verseId) {
+    // Function to toggle verses visibility and button text
+    function toggleVerses(verseId, button) {
       const versesElement = document.getElementById(verseId);
-      versesElement.style.display = versesElement.style.display === 'none' ? 'block' : 'none';
+      if (versesElement.style.display === 'none') {
+        versesElement.style.display = 'block';
+        button.textContent = 'மூடு'; // Change button text to "மூடு"
+      } else {
+        versesElement.style.display = 'none';
+        button.textContent = 'வாசி'; // Change button text to "வாசி"
+      }
     }
 
     // Function to update today's progress bar

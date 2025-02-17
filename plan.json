@@ -1,27 +1,24 @@
 [
   {
     "date": "2025-02-18",
-    "morning": "Genesis 1-3",
-    "evening": "Psalm 1"
+    "morning": {
+      "book": "genesis",
+      "chapter": 1
+    },
+    "evening": {
+      "book": "psalms",
+      "chapter": 1
+    }
   },
   {
     "date": "2025-02-19",
-    "morning": "Genesis 4-6",
-    "evening": "Psalm 2"
-  },
-  {
-    "date": "2025-02-20",
-    "morning": "Genesis 7-9",
-    "evening": "Psalm 3"
-  },
-  {
-    "date": "2025-02-21",
-    "morning": "Genesis 10-12",
-    "evening": "Psalm 4"
-  },
-  {
-    "date": "2025-02-22",
-    "morning": "Genesis 13-15",
-    "evening": "Psalm 5"
+    "morning": {
+      "book": "genesis",
+      "chapter": 2
+    },
+    "evening": {
+      "book": "psalms",
+      "chapter": 2
+    }
   }
 ]

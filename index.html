@@ -99,18 +99,23 @@
     .verse {
       margin-bottom: 5px;
     }
+    .tamil {
+      font-family: 'Lohit Tamil', 'Noto Sans Tamil', Arial, sans-serif;
+    }
   </style>
+  <!-- Add Tamil font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Bible Reading Plan</h1>
+  <h1>விவிலிய வாசக திட்டம்</h1>
   <div class="navigation">
-    <button id="prev-day">Previous Day</button>
-    <button id="next-day">Next Day</button>
+    <button id="prev-day">முந்தைய நாள்</button>
+    <button id="next-day">அடுத்த நாள்</button>
   </div>
 
   <!-- Progress for Today -->
   <div class="progress-container">
-    <h3>Today's Progress</h3>
+    <h3>இன்றைய முன்னேற்றம்</h3>
     <div class="progress-bar">
       <div id="today-progress-bar-fill" class="progress-bar-fill"></div>
     </div>
@@ -118,7 +123,7 @@
 
   <!-- Total Progress -->
   <div class="progress-container">
-    <h3>Total Progress</h3>
+    <h3>மொத்த முன்னேற்றம்</h3>
     <div class="progress-bar">
       <div id="total-progress-bar-fill" class="progress-bar-fill"></div>
     </div>
@@ -126,7 +131,7 @@
 
   <!-- Calendar -->
   <div id="calendar">
-    <h3>Calendar</h3>
+    <h3>நாட்காட்டி</h3>
     <div id="calendar-dates"></div>
   </div>
 
@@ -197,23 +202,23 @@
         const dayElement = document.createElement('div');
         dayElement.className = 'day';
         dayElement.innerHTML = `
-          <h2>Date: ${formatDate(todayPlan.date)}</h2>
+          <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
-            <p><strong>Morning:</strong> ${todayPlan.morning.book} ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
+            <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
             <div class="verses">
-              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'Verses not found.'}
+              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
             <label>
-              <input type="checkbox" class="completed" data-type="morning"> Mark as completed
+              <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
             </label>
           </div>
           <div class="reading">
-            <p><strong>Evening:</strong> ${todayPlan.evening.book} ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
+            <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
             <div class="verses">
-              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'Verses not found.'}
+              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
             <label>
-              <input type="checkbox" class="completed" data-type="evening"> Mark as completed
+              <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
             </label>
           </div>
         `;
@@ -244,7 +249,7 @@
         updateTodayProgress(completedCount, checkboxes.length);
       } else {
         // No reading for today
-        planContainer.innerHTML = '<div class="no-reading">No reading for today.</div>';
+        planContainer.innerHTML = '<div class="no-reading">இன்றைய தினத்திற்கு வாசிப்பு இல்லை.</div>';
       }
 
       // Update navigation buttons

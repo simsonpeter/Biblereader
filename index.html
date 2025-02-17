@@ -5,7 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bible Reading Plan</title>
   <style>
-    /* Add your CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .day {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    .day h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    .reading {
+      margin-bottom: 10px;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .progress-bar-fill {
+      height: 10px;
+      background-color: #27ae60;
+      border-radius: 5px;
+      width: 0%;
+    }
+    .no-reading {
+      text-align: center;
+      color: #e74c3c;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .navigation button {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .navigation button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    .progress-container {
+      margin-bottom: 20px;
+    }
+    .progress-container h3 {
+      margin: 0 0 10px 0;
+      color: #2c3e50;
+    }
+    #calendar-dates {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .calendar-date {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .calendar-date.completed {
+      background-color: #27ae60;
+      color: #fff;
+    }
+    .calendar-date.today {
+      border: 2px solid #2980b9;
+    }
+    .verses {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+    .verse {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>

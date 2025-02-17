@@ -95,12 +95,22 @@
       margin-top: 10px;
       font-size: 0.9em;
       color: #555;
+      display: none; /* Hide verses by default */
     }
     .verse {
       margin-bottom: 5px;
     }
     .tamil {
       font-family: 'Lohit Tamil', 'Noto Sans Tamil', Arial, sans-serif;
+    }
+    .close-button {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
     }
   </style>
   <!-- Add Tamil font from Google Fonts -->
@@ -205,18 +215,20 @@
           <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
             <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
-            <div class="verses">
+            <div class="verses" id="morning-verses">
               ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
+            <button class="close-button" onclick="toggleVerses('morning-verses')">மூடு</button>
             <label>
               <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
             </label>
           </div>
           <div class="reading">
             <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
-            <div class="verses">
+            <div class="verses" id="evening-verses">
               ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
+            <button class="close-button" onclick="toggleVerses('evening-verses')">மூடு</button>
             <label>
               <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
             </label>
@@ -260,6 +272,12 @@
 
       // Update total progress
       updateTotalProgress();
+    }
+
+    // Function to toggle verses visibility
+    function toggleVerses(verseId) {
+      const versesElement = document.getElementById(verseId);
+      versesElement.style.display = versesElement.style.display === 'none' ? 'block' : 'none';
     }
 
     // Function to update today's progress bar

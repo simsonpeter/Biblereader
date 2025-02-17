@@ -31,13 +31,6 @@
     .reading {
       margin-bottom: 10px;
     }
-    .reading a {
-      color: #2980b9;
-      text-decoration: none;
-    }
-    .reading a:hover {
-      text-decoration: underline;
-    }
     .progress-bar {
       width: 100%;
       background-color: #ddd;
@@ -98,6 +91,14 @@
     .calendar-date.today {
       border: 2px solid #2980b9;
     }
+    .verses {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+    .verse {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -143,6 +144,24 @@
       return `${day}-${month}`;
     }
 
+    // Function to load Tamil Bible verses
+    async function loadTamilBible(book, chapter) {
+      try {
+        const response = await fetch(`tamil-bible/${book}.json`);
+        const data = await response.json();
+        console.log(`Loaded ${book}.json:`, data); // Debugging log
+
+        // Find the specified chapter
+        const chapterData = data.chapters.find(c => c.chapter === chapter.toString());
+        console.log(`Chapter ${chapter} data:`, chapterData); // Debugging log
+
+        return chapterData ? chapterData.verses : null;
+      } catch (error) {
+        console.error(`Error loading ${book}.json:`, error);
+        return null;
+      }
+    }
+
     // Load the plan from the JSON file
     fetch('plan.json')
       .then(response => response.json())
@@ -155,27 +174,35 @@
       .catch(error => console.error('Error loading plan:', error));
 
     // Function to load the plan for a specific date
-    function loadPlan(date) {
+    async function loadPlan(date) {
       const planContainer = document.getElementById('plan-container');
       const todayPlan = planData.find(day => day.date === date);
       console.log("Matching plan for date:", date, todayPlan); // Debugging log
 
       if (todayPlan) {
+        // Load Tamil Bible verses for morning and evening readings
+        const morningVerses = await loadTamilBible(todayPlan.morning.book, todayPlan.morning.chapter);
+        const eveningVerses = await loadTamilBible(todayPlan.evening.book, todayPlan.evening.chapter);
+
         // Display today's readings
         const dayElement = document.createElement('div');
         dayElement.className = 'day';
-        const morningLink = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(todayPlan.morning)}`;
-        const eveningLink = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(todayPlan.evening)}`;
         dayElement.innerHTML = `
           <h2>Date: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
-            <p><strong>Morning:</strong> <a href="${morningLink}" target="_blank">${todayPlan.morning}</a></p>
+            <p><strong>Morning:</strong> ${todayPlan.morning.book} ${todayPlan.morning.chapter}</p>
+            <div class="verses">
+              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'Verses not found.'}
+            </div>
             <label>
               <input type="checkbox" class="completed" data-type="morning"> Mark as completed
             </label>
           </div>
           <div class="reading">
-            <p><strong>Evening:</strong> <a href="${eveningLink}" target="_blank">${todayPlan.evening}</a></p>
+            <p><strong>Evening:</strong> ${todayPlan.evening.book} ${todayPlan.evening.chapter}</p>
+            <div class="verses">
+              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'Verses not found.'}
+            </div>
             <label>
               <input type="checkbox" class="completed" data-type="evening"> Mark as completed
             </label>

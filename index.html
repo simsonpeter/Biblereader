@@ -263,8 +263,175 @@
   <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
 
   <script>
-    // JavaScript code remains the same as in the previous version
-    // (Refer to the previous code for the full script)
+    let currentDate = new Date().toISOString().split('T')[0];
+    let planData = [];
+
+    // Function to format date as DD-MM
+    function formatDate(date) {
+      const [year, month, day] = date.split('-');
+      return `${day}-${month}`;
+    }
+
+    // Load the plan from the JSON file
+    fetch('plan.json')
+      .then(response => response.json())
+      .then(data => {
+        planData = data;
+        loadPlan(currentDate);
+        generateCalendar();
+      })
+      .catch(error => console.error('Error loading plan:', error));
+
+    // Function to load the plan for a specific date
+    async function loadPlan(date) {
+      const planContainer = document.getElementById('plan-container');
+      const todayPlan = planData.find(day => day.date === date);
+
+      if (todayPlan) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.innerHTML = `
+          <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
+          <div class="reading">
+            <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
+            <div class="verses" id="morning-verses">
+              வசனங்கள் கிடைக்கவில்லை.
+            </div>
+            <button class="toggle-button" onclick="toggleVerses('morning-verses', this)">வாசி</button>
+            <label>
+              <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
+            </label>
+          </div>
+          <div class="reading">
+            <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
+            <div class="verses" id="evening-verses">
+              வசனங்கள் கிடைக்கவில்லை.
+            </div>
+            <button class="toggle-button" onclick="toggleVerses('evening-verses', this)">வாசி</button>
+            <label>
+              <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
+            </label>
+          </div>
+        `;
+        planContainer.innerHTML = '';
+        planContainer.appendChild(dayElement);
+
+        const checkboxes = dayElement.querySelectorAll('.completed');
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = localStorage.getItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`) === 'true';
+          checkbox.addEventListener('change', () => {
+            localStorage.setItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`, checkbox.checked);
+            updateTotalProgress();
+            generateCalendar();
+          });
+        });
+
+        updateTotalProgress();
+      } else {
+        planContainer.innerHTML = '<div class="no-reading">இன்றைய தினத்திற்கு வாசிப்பு இல்லை.</div>';
+      }
+
+      const prevDate = getPreviousDate(date);
+      const nextDate = getNextDate(date);
+      document.getElementById('prev-day').disabled = !planData.find(day => day.date === prevDate);
+      document.getElementById('next-day').disabled = !planData.find(day => day.date === nextDate);
+    }
+
+    // Function to toggle verses visibility
+    function toggleVerses(verseId, button) {
+      const versesElement = document.getElementById(verseId);
+      if (versesElement.style.display === 'none') {
+        versesElement.style.display = 'block';
+        button.textContent = 'மூடு';
+      } else {
+        versesElement.style.display = 'none';
+        button.textContent = 'வாசி';
+      }
+    }
+
+    // Function to update total progress bar
+    function updateTotalProgress() {
+      let totalReadings = 0;
+      let totalCompleted = 0;
+
+      planData.forEach(day => {
+        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
+        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
+        if (morningCompleted) totalCompleted++;
+        if (eveningCompleted) totalCompleted++;
+        totalReadings += 2;
+      });
+
+      const progress = Math.round((totalCompleted / totalReadings) * 100);
+      document.getElementById('total-progress-bar-fill').style.width = `${progress}%`;
+    }
+
+    // Function to generate calendar
+    function generateCalendar() {
+      const calendarDates = document.getElementById('calendar-dates');
+      calendarDates.innerHTML = '';
+
+      planData.forEach(day => {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.textContent = formatDate(day.date);
+
+        if (day.date === currentDate) {
+          dateElement.classList.add('today');
+        }
+
+        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
+        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
+        if (morningCompleted && eveningCompleted) {
+          dateElement.classList.add('completed');
+        }
+
+        dateElement.addEventListener('click', () => {
+          currentDate = day.date;
+          loadPlan(currentDate);
+        });
+
+        calendarDates.appendChild(dateElement);
+      });
+    }
+
+    // Function to get the previous date
+    function getPreviousDate(date) {
+      const prevDate = new Date(date);
+      prevDate.setDate(prevDate.getDate() - 1);
+      return prevDate.toISOString().split('T')[0];
+    }
+
+    // Function to get the next date
+    function getNextDate(date) {
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+      return nextDate.toISOString().split('T')[0];
+    }
+
+    // Navigation button event listeners
+    document.getElementById('prev-day').addEventListener('click', () => {
+      currentDate = getPreviousDate(currentDate);
+      loadPlan(currentDate);
+    });
+
+    document.getElementById('next-day').addEventListener('click', () => {
+      currentDate = getNextDate(currentDate);
+      loadPlan(currentDate);
+    });
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      const body = document.body;
+      body.classList.toggle('dark-mode');
+      const isDarkMode = body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
   </script>
 </body>
 </html>

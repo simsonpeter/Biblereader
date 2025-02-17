@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Reading Plan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .day {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    .day h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    .reading {
+      margin-bottom: 10px;
+    }
+    .reading a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    .reading a:hover {
+      text-decoration: underline;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .progress-bar-fill {
+      height: 10px;
+      background-color: #27ae60;
+      border-radius: 5px;
+      width: 0%;
+    }
+    .no-reading {
+      text-align: center;
+      color: #e74c3c;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .navigation button {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .navigation button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    .progress-container {
+      margin-bottom: 20px;
+    }
+    .progress-container h3 {
+      margin: 0 0 10px 0;
+      color: #2c3e50;
+    }
+    #calendar-dates {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .calendar-date {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .calendar-date.completed {
+      background-color: #27ae60;
+      color: #fff;
+    }
+    .calendar-date.today {
+      border: 2px solid #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bible Reading Plan</h1>
+  <div class="navigation">
+    <button id="prev-day">Previous Day</button>
+    <button id="next-day">Next Day</button>
+  </div>
+
+  <!-- Progress for Today -->
+  <div class="progress-container">
+    <h3>Today's Progress</h3>
+    <div class="progress-bar">
+      <div id="today-progress-bar-fill" class="progress-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- Total Progress -->
+  <div class="progress-container">
+    <h3>Total Progress</h3>
+    <div class="progress-bar">
+      <div id="total-progress-bar-fill" class="progress-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div id="calendar">
+    <h3>Calendar</h3>
+    <div id="calendar-dates"></div>
+  </div>
+
+  <!-- Plan Container -->
+  <div id="plan-container"></div>
+
+  <script>
+    let currentDate = new Date().toISOString().split('T')[0];
+    console.log("Today's date:", currentDate); // Debugging log
+    let planData = [];
+
+    // Function to format date as DD-MM-YYYY
+    function formatDate(date) {
+      const [year, month, day] = date.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    // Load the plan from the JSON file
+    fetch('plan.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Loaded plan data:", data); // Debugging log
+        planData = data;
+        loadPlan(currentDate);
+        generateCalendar(); // Generate calendar after loading plan
+      })
+      .catch(error => console.error('Error loading plan:', error));
+
+    // Function to load the plan for a specific date
+    function loadPlan(date) {
+      const planContainer = document.getElementById('plan-container');
+      const todayPlan = planData.find(day => day.date === date);
+      console.log("Matching plan for date:", date, todayPlan); // Debugging log
+
+      if (todayPlan) {
+        // Display today's readings
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        const morningLink = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(todayPlan.morning)}`;
+        const eveningLink = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(todayPlan.evening)}`;
+        dayElement.innerHTML = `
+          <h2>Date: ${formatDate(todayPlan.date)}</h2>
+          <div class="reading">
+            <p><strong>Morning:</strong> <a href="${morningLink}" target="_blank">${todayPlan.morning}</a></p>
+            <label>
+              <input type="checkbox" class="completed" data-type="morning"> Mark as completed
+            </label>
+          </div>
+          <div class="reading">
+            <p><strong>Evening:</strong> <a href="${eveningLink}" target="_blank">${todayPlan.evening}</a></p>
+            <label>
+              <input type="checkbox" class="completed" data-type="evening"> Mark as completed
+            </label>
+          </div>
+        `;
+        planContainer.innerHTML = ''; // Clear previous content
+        planContainer.appendChild(dayElement);
+
+        // Add event listeners to checkboxes
+        const checkboxes = dayElement.querySelectorAll('.completed');
+        let completedCount = 0;
+
+        checkboxes.forEach(checkbox => {
+          // Load saved state from localStorage
+          checkbox.checked = localStorage.getItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`) === 'true';
+          if (checkbox.checked) completedCount++;
+
+          // Save state to localStorage when changed
+          checkbox.addEventListener('change', () => {
+            localStorage.setItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`, checkbox.checked);
+            if (checkbox.checked) completedCount++;
+            else completedCount--;
+            updateTodayProgress(completedCount, checkboxes.length);
+            updateTotalProgress();
+            generateCalendar(); // Update calendar after marking as completed
+          });
+        });
+
+        // Update today's progress initially
+        updateTodayProgress(completedCount, checkboxes.length);
+      } else {
+        // No reading for today
+        planContainer.innerHTML = '<div class="no-reading">No reading for today.</div>';
+      }
+
+      // Update navigation buttons
+      const prevDate = getPreviousDate(date);
+      const nextDate = getNextDate(date);
+      document.getElementById('prev-day').disabled = !planData.find(day => day.date === prevDate);
+      document.getElementById('next-day').disabled = !planData.find(day => day.date === nextDate);
+
+      // Update total progress
+      updateTotalProgress();
+    }
+
+    // Function to update today's progress bar
+    function updateTodayProgress(completed, total) {
+      const progress = Math.round((completed / total) * 100);
+      document.getElementById('today-progress-bar-fill').style.width = `${progress}%`;
+    }
+
+    // Function to update total progress bar
+    function updateTotalProgress() {
+      let totalReadings = 0;
+      let totalCompleted = 0;
+
+      planData.forEach(day => {
+        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
+        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
+        if (morningCompleted) totalCompleted++;
+        if (eveningCompleted) totalCompleted++;
+        totalReadings += 2;
+      });
+
+      const progress = Math.round((totalCompleted / totalReadings) * 100);
+      document.getElementById('total-progress-bar-fill').style.width = `${progress}%`;
+    }
+
+    // Function to generate calendar
+    function generateCalendar() {
+      const calendarDates = document.getElementById('calendar-dates');
+      calendarDates.innerHTML = '';
+
+      planData.forEach(day => {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.textContent = formatDate(day.date);
+
+        // Highlight today's date
+        if (day.date === currentDate) {
+          dateElement.classList.add('today');
+        }
+
+        // Highlight completed dates
+        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
+        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
+        if (morningCompleted && eveningCompleted) {
+          dateElement.classList.add('completed');
+        }
+
+        // Add click event to load plan for the selected date
+        dateElement.addEventListener('click', () => {
+          currentDate = day.date;
+          loadPlan(currentDate);
+        });
+
+        calendarDates.appendChild(dateElement);
+      });
+    }
+
+    // Function to get the previous date
+    function getPreviousDate(date) {
+      const prevDate = new Date(date);
+      prevDate.setDate(prevDate.getDate() - 1);
+      return prevDate.toISOString().split('T')[0];
+    }
+
+    // Function to get the next date
+    function getNextDate(date) {
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+      return nextDate.toISOString().split('T')[0];
+    }
+
+    // Navigation button event listeners
+    document.getElementById('prev-day').addEventListener('click', () => {
+      currentDate = getPreviousDate(currentDate);
+      loadPlan(currentDate);
+    });
+
+    document.getElementById('next-day').addEventListener('click', () => {
+      currentDate = getNextDate(currentDate);
+      loadPlan(currentDate);
+    });
+  </script>
+</body>
+</html>

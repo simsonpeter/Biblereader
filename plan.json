@@ -3,31 +3,29 @@
     "date": "2025-02-18",
     "morning": {
       "book": "Mark",
-      "chapter": "1",  
-      "verses": "01-22",     
+      "chapter": "1",
+      "verses": "01-22",
       "tamil": "மாற்கு"
     },
     "evening": {
       "book": "Leviticus",
-      "chapter": "23-24",  
-      "verses": "",  
+      "chapter": "23-24",
+      "verses": "",
       "tamil": "லேவியராகமம்"
     }
-  }
-]
-[
+  },
   {
     "date": "2025-02-19",
     "morning": {
       "book": "Mark",
-      "chapter": "1",  
-      "verses": "23-45",     
+      "chapter": "1",
+      "verses": "23-45",
       "tamil": "மாற்கு"
     },
     "evening": {
       "book": "Leviticus",
-      "chapter": "25",  
-      "verses": "",  
+      "chapter": "25",
+      "verses": "",
       "tamil": "லேவியராகமம்"
     }
   }

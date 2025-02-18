@@ -2,16 +2,16 @@
   {
     "date": "2025-02-18",
     "morning": {
-      "book": "genesis",
-      "tamil": "ஆதியாகமம்",
-      "chapter": 1,
-      "verses": "1-5"
+      "book": "Mathew",
+      "tamil": "மத்தேயு",
+      "chapter": 28,
+      "verses": ""
     },
     "evening": {
-      "book": "psalms",
-      "tamil": "சங்கீதம்",
-      "chapter": 1,
-      "verses": "1-3"
+      "book": "leviticus",
+      "tamil": "லேவியராகமம்",
+      "chapter": 21-22,
+      "verses": ""
     }
   },
   {

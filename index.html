@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Year Bible Reading Plan</title>
+  <title>One Year Bible Reading App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -213,6 +213,12 @@
       document.getElementById('progress').style.width = `${progress}%`;
     }
 
+    // Function to format date as DD-MM-YYYY
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
     // Function to load today's reading
     async function loadToday() {
       const currentIndex = findTodayIndex();
@@ -222,7 +228,8 @@
       }
 
       const dailyPlan = plan[currentIndex];
-      document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
+      const formattedDate = formatDate(dailyPlan.date); // Format the date
+      document.getElementById('date-title').textContent = `Reading for ${formattedDate}`;
 
       // Update progress bar
       updateProgressBar();
@@ -328,7 +335,8 @@
       }
 
       const dailyPlan = plan[index];
-      document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
+      const formattedDate = formatDate(dailyPlan.date); // Format the date
+      document.getElementById('date-title').textContent = `Reading for ${formattedDate}`;
 
       // Display morning and evening readings
       document.getElementById('morning-text').textContent = `${dailyPlan.morning.book} ${formatReading(dailyPlan.morning)}`;

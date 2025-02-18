@@ -1,12 +1,28 @@
 [
   {
     "date": "2025-02-18",
-    "morning": {"book": "Genesis", "chapter": 1, "verses": [1, 2, 3]},
-    "evening": {"book": "Genesis", "chapter": 2, "verses": []}
+    "morning": {
+      "book": "Genesis",
+      "chapters": "1",
+      "verses": "1,2,3"
+    },
+    "evening": {
+      "book": "Genesis",
+      "chapters": "2",
+      "verses": ""
+    }
   },
   {
-    "date": "2025-02-19",
-    "morning": {"book": "Exodus", "chapter": 1, "verses": [1, 2, 3]},
-    "evening": {"book": "Exodus", "chapter": 2, "verses": [1, 2]}
+    "date": "2025-02-29",
+    "morning": {
+      "book": "Genesis",
+      "chapters": "3-4",
+      "verses": ""
+    },
+    "evening": {
+      "book": "Genesis",
+      "chapters": "5",
+      "verses": "1,2,3"
+    }
   }
 ]

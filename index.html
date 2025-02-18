@@ -12,7 +12,7 @@
       padding: 0;
       background-color: #f4f4f4;
       color: #333;
-      transition: background-color 0.3s, color 0.3s;
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
 
     /* Dark Mode Styles */
@@ -136,6 +136,7 @@
       height: 10px;
       background-color: #27ae60;
       width: 0%;
+      transition: width 0.5s ease;
     }
 
     /* Calendar */
@@ -159,7 +160,6 @@
       border: 1px solid #ddd;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .calendar-date.completed {
@@ -224,18 +224,50 @@
       margin-top: 10px;
     }
 
-    /* Dark Mode Toggle */
-    .dark-mode-toggle {
+    /* Full-Page Modal */
+    .modal {
+      display: none;
       position: fixed;
-      bottom: 20px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark-mode .modal-content {
+      background-color: #111111;
+      color: #ffffff;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
       right: 20px;
-      background-color: #2980b9;
+      background-color: #e74c3c;
       color: #fff;
       border: none;
-      padding: 10px;
-      border-radius: 50%;
+      padding: 10px 20px;
+      border-radius: 5px;
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-size: 1em;
+    }
+
+    .close-modal:hover {
+      background-color: #c0392b;
     }
   </style>
   <!-- Add Tamil font from Google Fonts -->
@@ -270,6 +302,14 @@
 
   <!-- Dark Mode Toggle -->
   <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+
+  <!-- Full-Page Modal -->
+  <div class="modal" id="verse-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">மூடு</button>
+      <div id="modal-verses"></div>
+    </div>
+  </div>
 
   <script>
     let currentDate = new Date().toISOString().split('T')[0];
@@ -347,20 +387,14 @@
           <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
             <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses || 'all'}</p>
-            <div class="verses" id="morning-verses">
-              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
-            </div>
-            <button class="toggle-button" onclick="toggleVerses('morning-verses', this)">வாசி</button>
+            <button class="toggle-button" onclick="openModal('${JSON.stringify(morningVerses)}')">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
             </label>
           </div>
           <div class="reading">
             <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses || 'all'}</p>
-            <div class="verses" id="evening-verses">
-              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
-            </div>
-            <button class="toggle-button" onclick="toggleVerses('evening-verses', this)">வாசி</button>
+            <button class="toggle-button" onclick="openModal('${JSON.stringify(eveningVerses)}')">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
             </label>
@@ -390,16 +424,27 @@
       document.getElementById('next-day').disabled = !planData.find(day => day.date === nextDate);
     }
 
-    // Function to toggle verses visibility
-    function toggleVerses(verseId, button) {
-      const versesElement = document.getElementById(verseId);
-      if (versesElement.style.display === 'none') {
-        versesElement.style.display = 'block';
-        button.textContent = 'மூடு';
-      } else {
-        versesElement.style.display = 'none';
-        button.textContent = 'வாசி';
-      }
+    // Function to open the modal with verses
+    function openModal(verses) {
+      const modal = document.getElementById('verse-modal');
+      const modalVerses = document.getElementById('modal-verses');
+
+      // Parse the verses data
+      const parsedVerses = JSON.parse(verses);
+
+      // Display the verses in the modal
+      modalVerses.innerHTML = parsedVerses
+        ? parsedVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('')
+        : 'வசனங்கள் கிடைக்கவில்லை.';
+
+      // Show the modal
+      modal.style.display = 'flex';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      const modal = document.getElementById('verse-modal');
+      modal.style.display = 'none';
     }
 
     // Function to update total progress bar
@@ -410,7 +455,7 @@
       planData.forEach(day => {
         const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
         const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
-              if (morningCompleted) totalCompleted++;
+        if (morningCompleted) totalCompleted++;
         if (eveningCompleted) totalCompleted++;
         totalReadings += 2;
       });

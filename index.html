@@ -47,6 +47,27 @@
       width: 0;
       transition: width 0.3s ease;
     }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .calendar div {
+      text-align: center;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .calendar div:hover {
+      background-color: #e0e0e0;
+    }
+    .calendar .disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
     .reading-container {
       display: flex;
       gap: 20px;
@@ -130,6 +151,9 @@
       <div class="progress" id="progress"></div>
     </div>
 
+    <!-- Calendar -->
+    <div class="calendar" id="calendar"></div>
+
     <!-- Today's Reading -->
     <h2 id="date-title">Today's Reading</h2>
 
@@ -166,6 +190,7 @@
       .then(data => {
         plan = data;
         loadToday(); // Load today's reading when the app opens
+        renderCalendar(); // Render the calendar
       });
 
     // Function to load a Bible book from the tamil-bible folder
@@ -264,6 +289,57 @@
     document.getElementById('back-button').addEventListener('click', () => {
       document.getElementById('bible-verses').classList.add('hidden');
     });
+
+    // Function to render the calendar
+    function renderCalendar() {
+      const calendar = document.getElementById('calendar');
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDay = firstDay.getDay();
+
+      // Clear the calendar
+      calendar.innerHTML = '';
+
+      // Add empty cells for days before the first day of the month
+      for (let i = 0; i < startingDay; i++) {
+        calendar.innerHTML += `<div class="disabled"></div>`;
+      }
+
+      // Add days of the month
+      for (let i = 1; i <= daysInMonth; i++) {
+        const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const isAvailable = plan.some(entry => entry.date === date);
+        calendar.innerHTML += `<div ${isAvailable ? `onclick="loadDate('${date}')"` : 'class="disabled"'}">${i}</div>`;
+      }
+    }
+
+    // Function to load reading for a specific date
+    async function loadDate(date) {
+      const index = plan.findIndex(entry => entry.date === date);
+      if (index === -1) {
+        alert('No reading plan available for this date.');
+        return;
+      }
+
+      const dailyPlan = plan[index];
+      document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
+
+      // Display morning and evening readings
+      document.getElementById('morning-text').textContent = `${dailyPlan.morning.book} ${formatReading(dailyPlan.morning)}`;
+      document.getElementById('evening-text').textContent = `${dailyPlan.evening.book} ${formatReading(dailyPlan.evening)}`;
+
+      // Add click event listeners to reading items
+      document.getElementById('morning-reading').addEventListener('click', async () => {
+        await loadVerses(dailyPlan.morning);
+      });
+      document.getElementById('evening-reading').addEventListener('click', async () => {
+        await loadVerses(dailyPlan.evening);
+      });
+    }
   </script>
 </body>
 </html>

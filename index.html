@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bible Reading Plan</title>
+  <title>விவிலிய வாசக திட்டம்</title>
   <style>
     /* General Styles */
     body {
@@ -243,7 +243,7 @@
 </head>
 <body>
   <!-- Header -->
-  <header>NJC Bible Reading Plan</header>
+  <header>விவிலிய வாசக திட்டம்</header>
 
   <!-- Navigation Buttons -->
   <div class="navigation">
@@ -253,7 +253,7 @@
 
   <!-- Total Progress -->
   <div class="progress-container">
-    <h3>Total Progress</h3>
+    <h3>மொத்த முன்னேற்றம்</h3>
     <div class="progress-bar">
       <div id="total-progress-bar-fill" class="progress-bar-fill"></div>
     </div>
@@ -261,7 +261,7 @@
 
   <!-- Calendar -->
   <div id="calendar">
-    <h3>Calendar</h3>
+    <h3>நாட்காட்டி</h3>
     <div id="calendar-dates"></div>
   </div>
 
@@ -282,20 +282,37 @@
     }
 
     // Function to load Tamil Bible verses
-    async function loadTamilBible(book, chapter, verses) {
+    async function loadTamilBible(book, chapterRange, verseRange) {
       try {
-        const response = await fetch(`tamil-bible/${book}.json`);
-        const data = await response.json();
-        const chapterData = data.chapters.find(c => c.chapter === chapter.toString());
-        if (!chapterData) return null;
+        const [startChapter, endChapter] = chapterRange.split('-').map(c => parseInt(c));
+        const [startVerse, endVerse] = verseRange.split('-').map(v => parseInt(v));
 
-        const [startVerse, endVerse] = verses.split('-').map(v => parseInt(v));
-        const filteredVerses = chapterData.verses.filter(v => {
-          const verseNumber = parseInt(v.verse);
-          return verseNumber >= startVerse && verseNumber <= endVerse;
-        });
+        let allVerses = [];
 
-        return filteredVerses;
+        // Loop through each chapter in the range
+        for (let chapter = startChapter; chapter <= endChapter; chapter++) {
+          const response = await fetch(`tamil-bible/${book}.json`);
+          const data = await response.json();
+          const chapterData = data.chapters.find(c => c.chapter === chapter.toString());
+
+          if (chapterData) {
+            // Filter verses for the current chapter
+            const filteredVerses = chapterData.verses.filter(v => {
+              const verseNumber = parseInt(v.verse);
+              return verseNumber >= startVerse && verseNumber <= endVerse;
+            });
+
+            // Add chapter number to verses for clarity
+            const versesWithChapter = filteredVerses.map(v => ({
+              ...v,
+              chapter: chapter
+            }));
+
+            allVerses = [...allVerses, ...versesWithChapter];
+          }
+        }
+
+        return allVerses;
       } catch (error) {
         console.error(`Error loading ${book}.json:`, error);
         return null;
@@ -328,7 +345,7 @@
           <div class="reading">
             <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
             <div class="verses" id="morning-verses">
-              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
+              ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
             <button class="toggle-button" onclick="toggleVerses('morning-verses', this)">வாசி</button>
             <label>
@@ -338,7 +355,7 @@
           <div class="reading">
             <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
             <div class="verses" id="evening-verses">
-              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
+              ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
             <button class="toggle-button" onclick="toggleVerses('evening-verses', this)">வாசி</button>
             <label>

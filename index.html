@@ -57,7 +57,7 @@
   <script>
     // Load JSON data
     let plan = [];
-    let genesis = {};
+    let bibleData = {}; // Store all Bible books here
 
     // Fetch plan.json
     fetch('plan.json')
@@ -67,14 +67,11 @@
         loadToday(); // Load today's reading when the app opens
       });
 
-    // Fetch genesis.json
-    fetch('genesis.json')
-      .then(response => response.json())
-      .then(data => {
-        genesis = data;
-      });
-
-    let currentIndex = 0;
+    // Function to load a Bible book from the tamil-bible folder
+    async function loadBibleBook(book) {
+      const response = await fetch(`tamil-bible/${book}.json`);
+      return response.json();
+    }
 
     // Function to find today's date in the plan
     function findTodayIndex() {
@@ -83,17 +80,17 @@
     }
 
     // Function to load today's reading
-    function loadToday() {
+    async function loadToday() {
       currentIndex = findTodayIndex();
       if (currentIndex === -1) {
         alert('No reading plan available for today.');
         return;
       }
-      loadDay(currentIndex);
+      await loadDay(currentIndex);
     }
 
     // Function to load verses for a specific day
-    function loadDay(index) {
+    async function loadDay(index) {
       const dailyPlan = plan[index];
       if (!dailyPlan) {
         alert('No more days available.');
@@ -105,8 +102,11 @@
 
       // Load morning verses
       const morning = dailyPlan.morning;
+      if (!bibleData[morning.book]) {
+        bibleData[morning.book] = await loadBibleBook(morning.book.toLowerCase());
+      }
       const morningVerses = morning.verses.map(v => {
-        return genesis.chapters[morning.chapter - 1].verses[v - 1].text;
+        return bibleData[morning.book].chapters[morning.chapter - 1].verses[v - 1].text;
       });
       document.getElementById('morning-verses').innerHTML = morningVerses
         .map(v => `<div class="verse">${v}</div>`)
@@ -114,8 +114,11 @@
 
       // Load evening verses
       const evening = dailyPlan.evening;
+      if (!bibleData[evening.book]) {
+        bibleData[evening.book] = await loadBibleBook(evening.book.toLowerCase());
+      }
       const eveningVerses = evening.verses.map(v => {
-        return genesis.chapters[evening.chapter - 1].verses[v - 1].text;
+        return bibleData[evening.book].chapters[evening.chapter - 1].verses[v - 1].text;
       });
       document.getElementById('evening-verses').innerHTML = eveningVerses
         .map(v => `<div class="verse">${v}</div>`)

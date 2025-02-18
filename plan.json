@@ -2,7 +2,7 @@
   {
     "date": "2025-02-18",
     "morning": {"book": "Genesis", "chapter": 1, "verses": [1, 2, 3]},
-    "evening": {"book": "Genesis", "chapter": 2, "verses": [1, 2]}
+    "evening": {"book": "Genesis", "chapter": 2, "verses": []}
   },
   {
     "date": "2025-02-19",

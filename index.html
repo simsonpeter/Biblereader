@@ -3,545 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>விவிலிய வாசக திட்டம்</title>
+  <title>One Year Bible Reading App</title>
   <style>
-    /* General Styles */
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    /* Dark Mode Styles */
-    body.dark-mode {
-      background-color: #000000; /* True black */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode header {
-      background-color: #111111; /* Dark gray for header */
-    }
-
-    .dark-mode .navigation {
-      background-color: #111111; /* Dark gray for navigation */
-    }
-
-    .dark-mode .navigation button {
-      background-color: #222222; /* Slightly lighter gray for buttons */
-    }
-
-    .dark-mode .progress-container {
-      background-color: #111111; /* Dark gray for progress container */
-    }
-
-    .dark-mode .progress-bar {
-      background-color: #333333; /* Dark gray for progress bar background */
-    }
-
-    .dark-mode #calendar {
-      background-color: #111111; /* Dark gray for calendar */
-    }
-
-    .dark-mode .calendar-date {
-      border-color: #333333; /* Dark gray for calendar date borders */
-      background-color: #222222; /* Slightly lighter gray for calendar dates */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .calendar-date.completed {
-      background-color: #27ae60; /* Keep green for completed dates */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .calendar-date.today {
-      border: 2px solid #2980b9; /* Keep blue border for today */
-    }
-
-    .dark-mode .day {
-      background-color: #111111; /* Dark gray for day cards */
-    }
-
-    .dark-mode .day h2 {
-      color: #3498db; /* Blue for headings */
-    }
-
-    .dark-mode .verses {
-      background-color: #222222; /* Slightly lighter gray for verses */
-      border-color: #333333; /* Dark gray for verse borders */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .toggle-button {
-      background-color: #222222; /* Slightly lighter gray for buttons */
-    }
-
-    .dark-mode .dark-mode-toggle {
-      background-color: #222222; /* Slightly lighter gray for dark mode toggle */
-    }
-
-    /* Header */
-    header {
-      background-color: #2980b9;
-      color: #fff;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.5em;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Navigation Buttons */
-    .navigation {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .navigation button {
-      background-color: #2980b9;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-
-    .navigation button:disabled {
-      background-color: #bdc3c7;
-      cursor: not-allowed;
-    }
-
-    /* Progress Bar */
-    .progress-container {
-      padding: 10px;
-      background-color: #fff;
-      margin: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .progress-bar {
-      width: 100%;
-      background-color: #ddd;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 10px;
-      background-color: #27ae60;
-      width: 0%;
-      transition: width 0.5s ease;
-    }
-
-    /* Calendar */
-    #calendar {
-      padding: 10px;
-      background-color: #fff;
-      margin: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    #calendar-dates {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-    }
-
-    .calendar-date {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .calendar-date.completed {
-      background-color: #27ae60;
-      color: #fff;
-    }
-
-    .calendar-date.today {
-      border: 2px solid #2980b9;
-    }
-
-    /* Plan Container */
-    #plan-container {
-      padding: 10px;
-    }
-
-    .day {
-      background-color: #fff;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .day h2 {
-      margin-top: 0;
-      color: #2980b9;
-    }
-
-    .reading {
-      margin-bottom: 10px;
-    }
-
-    .verses {
-      margin-top: 10px;
-      font-size: 0.9em;
-      color: #555;
-      display: none;
-      max-height: 200px;
-      overflow-y: auto;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-
-    .verse {
-      margin-bottom: 5px;
-    }
-
-    .tamil {
-      font-family: 'Lohit Tamil', 'Noto Sans Tamil', Arial, sans-serif;
-    }
-
-    .toggle-button {
-      background-color: #2980b9;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    /* Full-Page Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: #fff;
       padding: 20px;
-      border-radius: 10px;
-      max-width: 90%;
-      max-height: 90%;
-      overflow-y: auto;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      background-color: #f4f4f4;
     }
-
-    .dark-mode .modal-content {
-      background-color: #111111;
-      color: #ffffff;
+    h1 {
+      font-size: 24px;
+      color: #333;
     }
-
-    .close-modal {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #e74c3c;
+    h2 {
+      font-size: 20px;
+      color: #555;
+      margin-top: 20px;
+    }
+    .verse {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
       color: #fff;
       border: none;
-      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 1em;
+      margin-top: 20px;
     }
-
-    .close-modal:hover {
-      background-color: #c0392b;
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
-  <!-- Add Tamil font from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Header -->
-  <header>விவிலிய வாசக திட்டம்</header>
+  <h1>One Year Bible Reading Plan</h1>
+  <h2 id="day-title">Day 1</h2>
 
-  <!-- Navigation Buttons -->
-  <div class="navigation">
-    <button id="prev-day">முந்தைய நாள்</button>
-    <button id="next-day">அடுத்த நாள்</button>
-  </div>
+  <h3>Morning Reading:</h3>
+  <div id="morning-verses"></div>
 
-  <!-- Total Progress -->
-  <div class="progress-container">
-    <h3>மொத்த முன்னேற்றம்</h3>
-    <div class="progress-bar">
-      <div id="total-progress-bar-fill" class="progress-bar-fill"></div>
-    </div>
-  </div>
+  <h3>Evening Reading:</h3>
+  <div id="evening-verses"></div>
 
-  <!-- Calendar -->
-  <div id="calendar">
-    <h3>நாட்காட்டி</h3>
-    <div id="calendar-dates"></div>
-  </div>
-
-  <!-- Plan Container -->
-  <div id="plan-container"></div>
-
-  <!-- Dark Mode Toggle -->
-  <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-
-  <!-- Full-Page Modal -->
-  <div class="modal" id="verse-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeModal()">மூடு</button>
-      <div id="modal-verses"></div>
-    </div>
-  </div>
+  <button id="next-day">Next Day</button>
 
   <script>
-    let currentDate = new Date().toISOString().split('T')[0];
-    let planData = [];
+    // Load JSON data
+    let plan = [];
+    let genesis = {};
 
-    // Function to format date as DD-MM
-    function formatDate(date) {
-      const [year, month, day] = date.split('-');
-      return `${day}-${month}`;
-    }
-
-    // Function to load Tamil Bible verses
-    async function loadTamilBible(book, chapterRange, verseRange) {
-      try {
-        const [startChapter, endChapter] = chapterRange.split('-').map(c => parseInt(c));
-        let allVerses = [];
-
-        // Loop through each chapter in the range
-        for (let chapter = startChapter; chapter <= endChapter; chapter++) {
-          const response = await fetch(`tamil-bible/${book}.json`);
-          const data = await response.json();
-          const chapterData = data.chapters.find(c => c.chapter === chapter.toString());
-
-          if (chapterData) {
-            let filteredVerses = chapterData.verses;
-
-            // If verseRange is not empty or "all", filter verses
-            if (verseRange && verseRange !== "all") {
-              const [startVerse, endVerse] = verseRange.split('-').map(v => parseInt(v));
-              filteredVerses = chapterData.verses.filter(v => {
-                const verseNumber = parseInt(v.verse);
-                return verseNumber >= startVerse && verseNumber <= endVerse;
-              });
-            }
-
-            // Add chapter number to verses for clarity
-            const versesWithChapter = filteredVerses.map(v => ({
-              ...v,
-              chapter: chapter
-            }));
-
-            allVerses = [...allVerses, ...versesWithChapter];
-          }
-        }
-
-        return allVerses;
-      } catch (error) {
-        console.error(`Error loading ${book}.json:`, error);
-        return null;
-      }
-    }
-
-    // Load the plan from the JSON file
+    // Fetch plan.json
     fetch('plan.json')
       .then(response => response.json())
       .then(data => {
-        planData = data;
-        loadPlan(currentDate);
-        generateCalendar();
-      })
-      .catch(error => console.error('Error loading plan:', error));
+        plan = data;
+        loadDay(0); // Load Day 1 initially
+      });
 
-    // Function to load the plan for a specific date
-    async function loadPlan(date) {
-      const planContainer = document.getElementById('plan-container');
-      const todayPlan = planData.find(day => day.date === date);
+    // Fetch genesis.json
+    fetch('genesis.json')
+      .then(response => response.json())
+      .then(data => {
+        genesis = data;
+      });
 
-      if (todayPlan) {
-        const morningVerses = await loadTamilBible(todayPlan.morning.book, todayPlan.morning.chapter, todayPlan.morning.verses);
-        const eveningVerses = await loadTamilBible(todayPlan.evening.book, todayPlan.evening.chapter, todayPlan.evening.verses);
+    let currentDay = 0;
 
-        const dayElement = document.createElement('div');
-        dayElement.className = 'day';
-        dayElement.innerHTML = `
-          <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
-          <div class="reading">
-            <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses || 'all'}</p>
-            <button class="toggle-button" onclick="openModal('${JSON.stringify(morningVerses)}')">வாசி</button>
-            <label>
-              <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
-            </label>
-          </div>
-          <div class="reading">
-            <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses || 'all'}</p>
-            <button class="toggle-button" onclick="openModal('${JSON.stringify(eveningVerses)}')">வாசி</button>
-            <label>
-              <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
-            </label>
-          </div>
-        `;
-        planContainer.innerHTML = '';
-        planContainer.appendChild(dayElement);
-
-        const checkboxes = dayElement.querySelectorAll('.completed');
-        checkboxes.forEach(checkbox => {
-          checkbox.checked = localStorage.getItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`) === 'true';
-          checkbox.addEventListener('change', () => {
-            localStorage.setItem(`reading-${todayPlan.date}-${checkbox.dataset.type}`, checkbox.checked);
-            updateTotalProgress();
-            generateCalendar();
-          });
-        });
-
-        updateTotalProgress();
-      } else {
-        planContainer.innerHTML = '<div class="no-reading">இன்றைய தினத்திற்கு வாசிப்பு இல்லை.</div>';
+    // Function to load verses for a specific day
+    function loadDay(day) {
+      const dailyPlan = plan[day];
+      if (!dailyPlan) {
+        alert('No more days available.');
+        return;
       }
 
-      const prevDate = getPreviousDate(date);
-      const nextDate = getNextDate(date);
-      document.getElementById('prev-day').disabled = !planData.find(day => day.date === prevDate);
-      document.getElementById('next-day').disabled = !planData.find(day => day.date === nextDate);
-    }
+      // Update day title
+      document.getElementById('day-title').textContent = `Day ${day + 1}`;
 
-    // Function to open the modal with verses
-    function openModal(verses) {
-      const modal = document.getElementById('verse-modal');
-      const modalVerses = document.getElementById('modal-verses');
-
-      // Parse the verses data
-      const parsedVerses = JSON.parse(verses);
-
-      // Display the verses in the modal
-      modalVerses.innerHTML = parsedVerses
-        ? parsedVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('')
-        : 'வசனங்கள் கிடைக்கவில்லை.';
-
-      // Show the modal
-      modal.style.display = 'flex';
-    }
-
-    // Function to close the modal
-    function closeModal() {
-      const modal = document.getElementById('verse-modal');
-      modal.style.display = 'none';
-    }
-
-    // Function to update total progress bar
-    function updateTotalProgress() {
-      let totalReadings = 0;
-      let totalCompleted = 0;
-
-      planData.forEach(day => {
-        const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
-        const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
-        if (morningCompleted) totalCompleted++;
-        if (eveningCompleted) totalCompleted++;
-        totalReadings += 2;
+      // Load morning verses
+      const morning = dailyPlan.morning;
+      const morningVerses = morning.verses.map(v => {
+        return genesis.chapters[morning.chapter - 1].verses[v - 1].text;
       });
+      document.getElementById('morning-verses').innerHTML = morningVerses
+        .map(v => `<div class="verse">${v}</div>`)
+        .join('');
 
-      const progress = Math.round((totalCompleted / totalReadings) * 100);
-      document.getElementById('total-progress-bar-fill').style.width = `${progress}%`;
-    }
-
-    // Function to generate calendar
-    function generateCalendar() {
-      const calendarDates = document.getElementById('calendar-dates');
-      calendarDates.innerHTML = '';
-
-      // Get the current month and year
-      const currentDateObj = new Date(currentDate);
-      const currentMonth = currentDateObj.getMonth(); // 0-based (0 = January, 11 = December)
-      const currentYear = currentDateObj.getFullYear();
-
-      planData.forEach(day => {
-        const dateObj = new Date(day.date);
-        const dayMonth = dateObj.getMonth();
-        const dayYear = dateObj.getFullYear();
-
-        // Only display dates from the current month and year
-        if (dayMonth === currentMonth && dayYear === currentYear) {
-          const dateElement = document.createElement('div');
-          dateElement.className = 'calendar-date';
-          dateElement.textContent = formatDate(day.date);
-
-          if (day.date === currentDate) {
-            dateElement.classList.add('today');
-          }
-
-          const morningCompleted = localStorage.getItem(`reading-${day.date}-morning`) === 'true';
-          const eveningCompleted = localStorage.getItem(`reading-${day.date}-evening`) === 'true';
-          if (morningCompleted && eveningCompleted) {
-            dateElement.classList.add('completed');
-          }
-
-          dateElement.addEventListener('click', () => {
-            currentDate = day.date;
-            loadPlan(currentDate);
-          });
-
-          calendarDates.appendChild(dateElement);
-        }
+      // Load evening verses
+      const evening = dailyPlan.evening;
+      const eveningVerses = evening.verses.map(v => {
+        return genesis.chapters[evening.chapter - 1].verses[v - 1].text;
       });
+      document.getElementById('evening-verses').innerHTML = eveningVerses
+        .map(v => `<div class="verse">${v}</div>`)
+        .join('');
     }
 
-    // Function to get the previous date
-    function getPreviousDate(date) {
-      const prevDate = new Date(date);
-      prevDate.setDate(prevDate.getDate() - 1);
-      return prevDate.toISOString().split('T')[0];
-    }
-
-    // Function to get the next date
-    function getNextDate(date) {
-      const nextDate = new Date(date);
-      nextDate.setDate(nextDate.getDate() + 1);
-      return nextDate.toISOString().split('T')[0];
-    }
-
-    // Navigation button event listeners
-    document.getElementById('prev-day').addEventListener('click', () => {
-      currentDate = getPreviousDate(currentDate);
-      loadPlan(currentDate);
-    });
-
+    // Next day button
     document.getElementById('next-day').addEventListener('click', () => {
-      currentDate = getNextDate(currentDate);
-      loadPlan(currentDate);
+      currentDay++;
+      loadDay(currentDay);
     });
-
-    // Dark Mode Toggle
-    function toggleDarkMode() {
-      const body = document.body;
-      body.classList.toggle('dark-mode');
-      const isDarkMode = body.classList.contains('dark-mode');
-      localStorage.setItem('darkMode', isDarkMode);
-    }
-
-    // Check for saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.body.classList.add('dark-mode');
-    }
   </script>
 </body>
 </html>

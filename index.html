@@ -19,6 +19,18 @@
       color: #555;
       margin-top: 20px;
     }
+    .reading-item {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    .reading-item:hover {
+      background-color: #f0f0f0;
+    }
     .verse {
       font-size: 16px;
       margin: 10px 0;
@@ -40,19 +52,24 @@
     button:hover {
       background-color: #0056b3;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>One Year Bible Reading Plan</h1>
   <h2 id="date-title">Today's Reading</h2>
 
-  <h3>Morning Reading:</h3>
-  <div id="morning-verses"></div>
+  <!-- List of readings for today -->
+  <div id="reading-list"></div>
 
-  <h3>Evening Reading:</h3>
-  <div id="evening-verses"></div>
-
-  <button id="next-day">Next Day</button>
+  <!-- Bible verses (hidden by default) -->
+  <div id="bible-verses" class="hidden">
+    <h3 id="verse-title"></h3>
+    <div id="verses"></div>
+    <button id="back-button">Back to Reading List</button>
+  </div>
 
   <script>
     // Load JSON data
@@ -81,54 +98,60 @@
 
     // Function to load today's reading
     async function loadToday() {
-      currentIndex = findTodayIndex();
+      const currentIndex = findTodayIndex();
       if (currentIndex === -1) {
         alert('No reading plan available for today.');
         return;
       }
-      await loadDay(currentIndex);
-    }
 
-    // Function to load verses for a specific day
-    async function loadDay(index) {
-      const dailyPlan = plan[index];
-      if (!dailyPlan) {
-        alert('No more days available.');
-        return;
-      }
-
-      // Update date title
+      const dailyPlan = plan[currentIndex];
       document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
 
-      // Load morning verses
-      const morning = dailyPlan.morning;
-      if (!bibleData[morning.book]) {
-        bibleData[morning.book] = await loadBibleBook(morning.book.toLowerCase());
-      }
-      const morningVerses = morning.verses.map(v => {
-        return bibleData[morning.book].chapters[morning.chapter - 1].verses[v - 1].text;
-      });
-      document.getElementById('morning-verses').innerHTML = morningVerses
-        .map(v => `<div class="verse">${v}</div>`)
-        .join('');
+      // Display reading list
+      const readingList = document.getElementById('reading-list');
+      readingList.innerHTML = `
+        <div class="reading-item" data-type="morning" data-book="${dailyPlan.morning.book}" data-chapter="${dailyPlan.morning.chapter}" data-verses="${dailyPlan.morning.verses.join(',')}">
+          <strong>Morning Reading:</strong> ${dailyPlan.morning.book} ${dailyPlan.morning.chapter}:${dailyPlan.morning.verses.join(',')}
+        </div>
+        <div class="reading-item" data-type="evening" data-book="${dailyPlan.evening.book}" data-chapter="${dailyPlan.evening.chapter}" data-verses="${dailyPlan.evening.verses.join(',')}">
+          <strong>Evening Reading:</strong> ${dailyPlan.evening.book} ${dailyPlan.evening.chapter}:${dailyPlan.evening.verses.join(',')}
+        </div>
+      `;
 
-      // Load evening verses
-      const evening = dailyPlan.evening;
-      if (!bibleData[evening.book]) {
-        bibleData[evening.book] = await loadBibleBook(evening.book.toLowerCase());
-      }
-      const eveningVerses = evening.verses.map(v => {
-        return bibleData[evening.book].chapters[evening.chapter - 1].verses[v - 1].text;
+      // Add click event listeners to reading items
+      const readingItems = document.querySelectorAll('.reading-item');
+      readingItems.forEach(item => {
+        item.addEventListener('click', async () => {
+          const book = item.getAttribute('data-book');
+          const chapter = item.getAttribute('data-chapter');
+          const verses = item.getAttribute('data-verses').split(',').map(Number);
+
+          // Load the Bible book if not already loaded
+          if (!bibleData[book]) {
+            bibleData[book] = await loadBibleBook(book.toLowerCase());
+          }
+
+          // Display the verses
+          const verseTexts = verses.map(v => {
+            return bibleData[book].chapters[chapter - 1].verses[v - 1].text;
+          });
+
+          document.getElementById('verse-title').textContent = `${book} ${chapter}:${verses.join(',')}`;
+          document.getElementById('verses').innerHTML = verseTexts
+            .map(v => `<div class="verse">${v}</div>`)
+            .join('');
+
+          // Show the Bible verses section
+          document.getElementById('reading-list').classList.add('hidden');
+          document.getElementById('bible-verses').classList.remove('hidden');
+        });
       });
-      document.getElementById('evening-verses').innerHTML = eveningVerses
-        .map(v => `<div class="verse">${v}</div>`)
-        .join('');
     }
 
-    // Next day button
-    document.getElementById('next-day').addEventListener('click', () => {
-      currentIndex++;
-      loadDay(currentIndex);
+    // Back button to return to the reading list
+    document.getElementById('back-button').addEventListener('click', () => {
+      document.getElementById('bible-verses').classList.add('hidden');
+      document.getElementById('reading-list').classList.remove('hidden');
     });
   </script>
 </body>

@@ -21,67 +21,6 @@
       color: #ffffff; /* White text */
     }
 
-    .dark-mode header {
-      background-color: #111111; /* Dark gray for header */
-    }
-
-    .dark-mode .navigation {
-      background-color: #111111; /* Dark gray for navigation */
-    }
-
-    .dark-mode .navigation button {
-      background-color: #222222; /* Slightly lighter gray for buttons */
-    }
-
-    .dark-mode .progress-container {
-      background-color: #111111; /* Dark gray for progress container */
-    }
-
-    .dark-mode .progress-bar {
-      background-color: #333333; /* Dark gray for progress bar background */
-    }
-
-    .dark-mode #calendar {
-      background-color: #111111; /* Dark gray for calendar */
-    }
-
-    .dark-mode .calendar-date {
-      border-color: #333333; /* Dark gray for calendar date borders */
-      background-color: #222222; /* Slightly lighter gray for calendar dates */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .calendar-date.completed {
-      background-color: #27ae60; /* Keep green for completed dates */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .calendar-date.today {
-      border: 2px solid #2980b9; /* Keep blue border for today */
-    }
-
-    .dark-mode .day {
-      background-color: #111111; /* Dark gray for day cards */
-    }
-
-    .dark-mode .day h2 {
-      color: #3498db; /* Blue for headings */
-    }
-
-    .dark-mode .verses {
-      background-color: #222222; /* Slightly lighter gray for verses */
-      border-color: #333333; /* Dark gray for verse borders */
-      color: #ffffff; /* White text */
-    }
-
-    .dark-mode .toggle-button {
-      background-color: #222222; /* Slightly lighter gray for buttons */
-    }
-
-    .dark-mode .dark-mode-toggle {
-      background-color: #222222; /* Slightly lighter gray for dark mode toggle */
-    }
-
     /* Header */
     header {
       background-color: #2980b9;
@@ -90,6 +29,7 @@
       text-align: center;
       font-size: 1.5em;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease;
     }
 
     /* Navigation Buttons */
@@ -99,6 +39,7 @@
       padding: 10px;
       background-color: #fff;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease;
     }
 
     .navigation button {
@@ -109,6 +50,11 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 1em;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .navigation button:hover {
+      transform: scale(1.05); /* Slight zoom on hover */
     }
 
     .navigation button:disabled {
@@ -123,6 +69,7 @@
       margin: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease;
     }
 
     .progress-bar {
@@ -136,7 +83,7 @@
       height: 10px;
       background-color: #27ae60;
       width: 0%;
-      transition: width 0.5s ease;
+      transition: width 0.5s ease; /* Smooth progress bar animation */
     }
 
     /* Calendar */
@@ -146,6 +93,7 @@
       margin: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease;
     }
 
     #calendar-dates {
@@ -160,6 +108,11 @@
       border: 1px solid #ddd;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .calendar-date:hover {
+      transform: scale(1.05); /* Slight zoom on hover */
     }
 
     .calendar-date.completed {
@@ -182,6 +135,7 @@
       padding: 15px;
       margin-bottom: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease;
     }
 
     .day h2 {
@@ -204,6 +158,7 @@
       border: 1px solid #ddd;
       border-radius: 5px;
       background-color: #f9f9f9;
+      transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
     }
 
     .verse {
@@ -222,6 +177,30 @@
       border-radius: 5px;
       cursor: pointer;
       margin-top: 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .toggle-button:hover {
+      transform: scale(1.05); /* Slight zoom on hover */
+    }
+
+    /* Dark Mode Toggle */
+    .dark-mode-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .dark-mode-toggle:hover {
+      transform: scale(1.1); /* Slight zoom on hover */
     }
 
     /* Full-Page Modal */
@@ -387,14 +366,14 @@
           <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
             <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses || 'all'}</p>
-            <button class="toggle-button" onclick="openModal('${JSON.stringify(morningVerses)}')">வாசி</button>
+            <button class="toggle-button" onclick="openModal('morning', ${JSON.stringify(morningVerses)})">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="morning"> முடிந்ததாக குறிக்கவும்
             </label>
           </div>
           <div class="reading">
             <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses || 'all'}</p>
-            <button class="toggle-button" onclick="openModal('${JSON.stringify(eveningVerses)}')">வாசி</button>
+            <button class="toggle-button" onclick="openModal('evening', ${JSON.stringify(eveningVerses)})">வாசி</button>
             <label>
               <input type="checkbox" class="completed" data-type="evening"> முடிந்ததாக குறிக்கவும்
             </label>
@@ -425,19 +404,14 @@
     }
 
     // Function to open the modal with verses
-    function openModal(verses) {
+    function openModal(type, verses) {
       const modal = document.getElementById('verse-modal');
       const modalVerses = document.getElementById('modal-verses');
 
-      // Parse the verses data
-      const parsedVerses = JSON.parse(verses);
-
-      // Display the verses in the modal
-      modalVerses.innerHTML = parsedVerses
-        ? parsedVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('')
+      modalVerses.innerHTML = verses
+        ? verses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('')
         : 'வசனங்கள் கிடைக்கவில்லை.';
 
-      // Show the modal
       modal.style.display = 'flex';
     }
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Year Bible Reading Plan</title>
+  <title>One Year Bible Reading App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -185,9 +185,10 @@
 
   <!-- Tab Bar -->
   <div class="tab-bar">
-    <button onclick="showReadingPlan()">Reading Plan</button>
-    <button onclick="showCalendar()">Calendar</button>
-    <button onclick="showSettings()">Settings</button>
+    <button onclick="showBibleReader()">Bible Reader</button>
+    <button onclick="showFullBible()">Full Bible</button>
+    <button onclick="showSongBook()">Song Book</button>
+    <button onclick="showAboutUs()">About Us</button>
   </div>
 
   <script>
@@ -363,22 +364,24 @@
     }
 
     // Tab Bar Functions
-    function showReadingPlan() {
-      document.getElementById('calendar').classList.add('hidden');
-      document.getElementById('bible-verses').classList.add('hidden');
+    function showBibleReader() {
+      // Show Bible Reader content
+      document.getElementById('calendar').classList.remove('hidden');
       document.getElementById('date-title').classList.remove('hidden');
       document.getElementById('reading-container').classList.remove('hidden');
-    }
-
-    function showCalendar() {
-      document.getElementById('calendar').classList.remove('hidden');
       document.getElementById('bible-verses').classList.add('hidden');
-      document.getElementById('date-title').classList.add('hidden');
-      document.getElementById('reading-container').classList.add('hidden');
     }
 
-    function showSettings() {
-      alert('Settings feature coming soon!');
+    function showFullBible() {
+      alert('Full Bible feature coming soon!');
+    }
+
+    function showSongBook() {
+      alert('Song Book feature coming soon!');
+    }
+
+    function showAboutUs() {
+      alert('About Us feature coming soon!');
     }
   </script>
 </body>

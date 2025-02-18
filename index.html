@@ -145,14 +145,17 @@
       });
     }
 
-    // Function to format the reading display (e.g., "Genesis 1:1-3" or "Genesis 1-2")
+    // Function to format the reading display
     function formatReading(reading) {
       if (reading.verses) {
+        // Specific verses
         return `${reading.chapters}:${reading.verses}`;
       } else if (reading.chapters.includes('-')) {
+        // Multiple chapters (e.g., "1-2")
         return `${reading.chapters}`;
       } else {
-        return `${reading.chapters}:all`;
+        // Whole chapter (e.g., "1")
+        return `${reading.chapters}`;
       }
     }
 

@@ -44,7 +44,7 @@
 </head>
 <body>
   <h1>One Year Bible Reading Plan</h1>
-  <h2 id="day-title">Day 1</h2>
+  <h2 id="date-title">Today's Reading</h2>
 
   <h3>Morning Reading:</h3>
   <div id="morning-verses"></div>
@@ -64,7 +64,7 @@
       .then(response => response.json())
       .then(data => {
         plan = data;
-        loadDay(0); // Load Day 1 initially
+        loadToday(); // Load today's reading when the app opens
       });
 
     // Fetch genesis.json
@@ -74,18 +74,34 @@
         genesis = data;
       });
 
-    let currentDay = 0;
+    let currentIndex = 0;
+
+    // Function to find today's date in the plan
+    function findTodayIndex() {
+      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      return plan.findIndex(entry => entry.date === today);
+    }
+
+    // Function to load today's reading
+    function loadToday() {
+      currentIndex = findTodayIndex();
+      if (currentIndex === -1) {
+        alert('No reading plan available for today.');
+        return;
+      }
+      loadDay(currentIndex);
+    }
 
     // Function to load verses for a specific day
-    function loadDay(day) {
-      const dailyPlan = plan[day];
+    function loadDay(index) {
+      const dailyPlan = plan[index];
       if (!dailyPlan) {
         alert('No more days available.');
         return;
       }
 
-      // Update day title
-      document.getElementById('day-title').textContent = `Day ${day + 1}`;
+      // Update date title
+      document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
 
       // Load morning verses
       const morning = dailyPlan.morning;
@@ -108,8 +124,8 @@
 
     // Next day button
     document.getElementById('next-day').addEventListener('click', () => {
-      currentDay++;
-      loadDay(currentDay);
+      currentIndex++;
+      loadDay(currentIndex);
     });
   </script>
 </body>

@@ -257,8 +257,9 @@
         .map((v, i) => `<div class="verse"><span class="verse-number">${i + 1}</span> ${v}</div>`)
         .join('');
 
-      // Show the Bible verses section
+      // Show the Bible verses section and hide the calendar
       document.getElementById('bible-verses').classList.remove('hidden');
+      document.getElementById('calendar').classList.add('hidden');
     }
 
     // Function to format the reading display
@@ -288,6 +289,7 @@
     // Back button to return to the reading list
     document.getElementById('back-button').addEventListener('click', () => {
       document.getElementById('bible-verses').classList.add('hidden');
+      document.getElementById('calendar').classList.remove('hidden');
     });
 
     // Function to render the calendar

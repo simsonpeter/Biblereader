@@ -1,32 +1,32 @@
 [
   {
-    "date": "2025-02-18",
+    "date": "2025-02-19",
     "morning": {
-      "book": "Mark",
+      "book": "Genesis",
       "chapter": "1",
-      "verses": "1-22",
-      "tamil": "மாற்கு"
+      "verses": "1-10",
+      "tamil": "ஆதியாகமம்"
     },
     "evening": {
-      "book": "Leviticus",
-      "chapter": "23-24",
-      "verses": "",
-      "tamil": "லேவியராகமம்"
+      "book": "Psalms",
+      "chapter": "1",
+      "verses": "all",
+      "tamil": "சங்கீதம்"
     }
   },
   {
-    "date": "2025-02-19",
+    "date": "2025-02-20",
     "morning": {
-      "book": "Mark",
-      "chapter": "1",
-      "verses": "23-45",
-      "tamil": "மாற்கு"
+      "book": "Genesis",
+      "chapter": "2",
+      "verses": "1-15",
+      "tamil": "ஆதியாகமம்"
     },
     "evening": {
-      "book": "Leviticus",
-      "chapter": "25",
-      "verses": "",
-      "tamil": "லேவியராகமம்"
+      "book": "Psalms",
+      "chapter": "2",
+      "verses": "all",
+      "tamil": "சங்கீதம்"
     }
   }
 ]

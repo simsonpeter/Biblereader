@@ -110,11 +110,11 @@
       // Display reading list
       const readingList = document.getElementById('reading-list');
       readingList.innerHTML = `
-        <div class="reading-item" data-type="morning" data-book="${dailyPlan.morning.book}" data-chapter="${dailyPlan.morning.chapter}" data-verses="${dailyPlan.morning.verses.join(',')}">
-          <strong>Morning Reading:</strong> ${dailyPlan.morning.book} ${dailyPlan.morning.chapter}:${dailyPlan.morning.verses.join(',')}
+        <div class="reading-item" data-type="morning" data-book="${dailyPlan.morning.book}" data-chapters="${dailyPlan.morning.chapters}" data-verses="${dailyPlan.morning.verses}">
+          <strong>Morning Reading:</strong> ${dailyPlan.morning.book} ${formatReading(dailyPlan.morning)}
         </div>
-        <div class="reading-item" data-type="evening" data-book="${dailyPlan.evening.book}" data-chapter="${dailyPlan.evening.chapter}" data-verses="${dailyPlan.evening.verses.join(',')}">
-          <strong>Evening Reading:</strong> ${dailyPlan.evening.book} ${dailyPlan.evening.chapter}:${dailyPlan.evening.verses.join(',')}
+        <div class="reading-item" data-type="evening" data-book="${dailyPlan.evening.book}" data-chapters="${dailyPlan.evening.chapters}" data-verses="${dailyPlan.evening.verses}">
+          <strong>Evening Reading:</strong> ${dailyPlan.evening.book} ${formatReading(dailyPlan.evening)}
         </div>
       `;
 
@@ -123,8 +123,8 @@
       readingItems.forEach(item => {
         item.addEventListener('click', async () => {
           const book = item.getAttribute('data-book');
-          const chapter = item.getAttribute('data-chapter');
-          const verses = item.getAttribute('data-verses').split(',').map(Number);
+          const chapters = item.getAttribute('data-chapters');
+          const verses = item.getAttribute('data-verses');
 
           // Load the Bible book if not already loaded
           if (!bibleData[book]) {
@@ -132,11 +132,8 @@
           }
 
           // Display the verses
-          const verseTexts = verses.map(v => {
-            return bibleData[book].chapters[chapter - 1].verses[v - 1].text;
-          });
-
-          document.getElementById('verse-title').textContent = `${book} ${chapter}:${verses.join(',')}`;
+          const verseTexts = getVerses(bibleData[book], chapters, verses);
+          document.getElementById('verse-title').textContent = `${book} ${formatReading({ chapters, verses })}`;
           document.getElementById('verses').innerHTML = verseTexts
             .map(v => `<div class="verse">${v}</div>`)
             .join('');
@@ -146,6 +143,39 @@
           document.getElementById('bible-verses').classList.remove('hidden');
         });
       });
+    }
+
+    // Function to format the reading display (e.g., "Genesis 1:1-3" or "Genesis 1-2")
+    function formatReading(reading) {
+      if (reading.verses) {
+        return `${reading.chapters}:${reading.verses}`;
+      } else if (reading.chapters.includes('-')) {
+        return `${reading.chapters}`;
+      } else {
+        return `${reading.chapters}:all`;
+      }
+    }
+
+    // Function to get verses based on chapters and verses
+    function getVerses(bookData, chapters, verses) {
+      const chapterList = chapters.split(',').map(ch => parseInt(ch.trim()));
+      const verseList = verses ? verses.split(',').map(v => parseInt(v.trim())) : null;
+
+      let result = [];
+      chapterList.forEach(chapter => {
+        if (verseList) {
+          // Specific verses in a chapter
+          verseList.forEach(verse => {
+            result.push(bookData.chapters[chapter - 1].verses[verse - 1].text);
+          });
+        } else {
+          // Whole chapter(s)
+          bookData.chapters[chapter - 1].verses.forEach(verse => {
+            result.push(verse.text);
+          });
+        }
+      });
+      return result;
     }
 
     // Back button to return to the reading list

@@ -4,13 +4,13 @@
     "morning": {
       "book": "Mathew",
       "tamil": "மத்தேயு",
-      "chapter": 28,
+      "chapter": "28",
       "verses": ""
     },
     "evening": {
       "book": "leviticus",
       "tamil": "லேவியராகமம்",
-      "chapter": 21-22,
+      "chapter": "21-22",
       "verses": ""
     }
   },
@@ -19,13 +19,13 @@
     "morning": {
       "book": "genesis",
       "tamil": "ஆதியாகமம்",
-      "chapter": 2,
+      "chapter": "2",
       "verses": "4-9"
     },
     "evening": {
       "book": "psalms",
       "tamil": "சங்கீதம்",
-      "chapter": 2,
+      "chapter": "2",
       "verses": "1-6"
     }
   }

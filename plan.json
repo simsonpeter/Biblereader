@@ -1,16 +1,16 @@
 [
   {
-    "date": "2023-10-01",
+    "date": "2025-02-18",
     "morning": {
       "book": "Genesis",
-      "chapter": "1-3",  // Read chapters 1 to 3
-      "verses": "",      // Read all verses in these chapters
+      "chapter": "1-3",  
+      "verses": "",     
       "tamil": "ஆதியாகமம்"
     },
     "evening": {
       "book": "Matthew",
-      "chapter": "1-2",  // Read chapters 1 to 2
-      "verses": "all",   // Read all verses in these chapters
+      "chapter": "1-2",  
+      "verses": "all",  
       "tamil": "மத்தேயு"
     }
   }

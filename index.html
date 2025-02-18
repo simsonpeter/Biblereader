@@ -233,7 +233,6 @@
         .join('');
 
       // Show the Bible verses section
-      document.getElementById('reading-list').classList.add('hidden');
       document.getElementById('bible-verses').classList.remove('hidden');
     }
 
@@ -264,7 +263,6 @@
     // Back button to return to the reading list
     document.getElementById('back-button').addEventListener('click', () => {
       document.getElementById('bible-verses').classList.add('hidden');
-      document.getElementById('reading-list').classList.remove('hidden');
     });
   </script>
 </body>

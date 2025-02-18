@@ -1,32 +1,12 @@
 [
   {
-    "date": "2025-02-18",
-    "morning": {
-      "book": "Genesis",
-      "chapter": "1",
-      "verses": "1-10",
-      "tamil": "ஆதியாகமம்"
-    },
-    "evening": {
-      "book": "Psalms",
-      "chapter": "1",
-      "verses": "all",
-      "tamil": "சங்கீதம்"
-    }
+    "date": "2025-02-19",
+    "morning": {"book": "Genesis", "chapter": 1, "verses": [1, 2, 3]},
+    "evening": {"book": "Genesis", "chapter": 2, "verses": [1, 2]}
   },
   {
-    "date": "2025-02-29",
-    "morning": {
-      "book": "Genesis",
-      "chapter": "2",
-      "verses": "1-15",
-      "tamil": "ஆதியாகமம்"
-    },
-    "evening": {
-      "book": "Psalms",
-      "chapter": "2",
-      "verses": "all",
-      "tamil": "சங்கீதம்"
-    }
+    "date": "2025-02-20",
+    "morning": {"book": "Genesis", "chapter": 3, "verses": [1, 2, 3]},
+    "evening": {"book": "Genesis", "chapter": 4, "verses": [1, 2]}
   }
 ]

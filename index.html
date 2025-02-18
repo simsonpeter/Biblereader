@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Year Bible Reading App</title>
+  <title>One Year Bible Reading Plan</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,14 +34,27 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
     }
-    h2 {
-      font-size: 20px;
-      color: #555;
-      margin-top: 20px;
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress {
+      height: 10px;
+      background-color: #007bff;
+      width: 0;
+      transition: width 0.3s ease;
+    }
+    .reading-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
     }
     .reading-item {
+      flex: 1;
       font-size: 16px;
-      margin: 10px 0;
       padding: 15px;
       background-color: #f9f9f9;
       border-radius: 8px;
@@ -112,10 +125,23 @@
   </div>
 
   <div class="container">
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Today's Reading -->
     <h2 id="date-title">Today's Reading</h2>
 
-    <!-- List of readings for today -->
-    <div id="reading-list"></div>
+    <!-- Morning and Evening Readings -->
+    <div class="reading-container">
+      <div class="reading-item" id="morning-reading">
+        <strong>Morning Reading:</strong> <span id="morning-text"></span>
+      </div>
+      <div class="reading-item" id="evening-reading">
+        <strong>Evening Reading:</strong> <span id="evening-text"></span>
+      </div>
+    </div>
 
     <!-- Bible verses (hidden by default) -->
     <div id="bible-verses" class="hidden">
@@ -154,6 +180,14 @@
       return plan.findIndex(entry => entry.date === today);
     }
 
+    // Function to update the progress bar
+    function updateProgressBar() {
+      const totalDays = plan.length;
+      const currentDay = findTodayIndex() + 1;
+      const progress = (currentDay / totalDays) * 100;
+      document.getElementById('progress').style.width = `${progress}%`;
+    }
+
     // Function to load today's reading
     async function loadToday() {
       const currentIndex = findTodayIndex();
@@ -165,41 +199,42 @@
       const dailyPlan = plan[currentIndex];
       document.getElementById('date-title').textContent = `Reading for ${dailyPlan.date}`;
 
-      // Display reading list
-      const readingList = document.getElementById('reading-list');
-      readingList.innerHTML = `
-        <div class="reading-item" data-type="morning" data-book="${dailyPlan.morning.book}" data-chapters="${dailyPlan.morning.chapters}">
-          <strong>Morning Reading:</strong> ${dailyPlan.morning.book} ${formatReading(dailyPlan.morning)}
-        </div>
-        <div class="reading-item" data-type="evening" data-book="${dailyPlan.evening.book}" data-chapters="${dailyPlan.evening.chapters}">
-          <strong>Evening Reading:</strong> ${dailyPlan.evening.book} ${formatReading(dailyPlan.evening)}
-        </div>
-      `;
+      // Update progress bar
+      updateProgressBar();
+
+      // Display morning and evening readings
+      document.getElementById('morning-text').textContent = `${dailyPlan.morning.book} ${formatReading(dailyPlan.morning)}`;
+      document.getElementById('evening-text').textContent = `${dailyPlan.evening.book} ${formatReading(dailyPlan.evening)}`;
 
       // Add click event listeners to reading items
-      const readingItems = document.querySelectorAll('.reading-item');
-      readingItems.forEach(item => {
-        item.addEventListener('click', async () => {
-          const book = item.getAttribute('data-book');
-          const chapters = item.getAttribute('data-chapters');
-
-          // Load the Bible book if not already loaded
-          if (!bibleData[book]) {
-            bibleData[book] = await loadBibleBook(book.toLowerCase());
-          }
-
-          // Display the verses with verse numbers
-          const verseTexts = getVerses(bibleData[book], chapters);
-          document.getElementById('verse-title').textContent = `${book} ${formatReading({ chapters })}`;
-          document.getElementById('verses').innerHTML = verseTexts
-            .map((v, i) => `<div class="verse"><span class="verse-number">${i + 1}</span> ${v}</div>`)
-            .join('');
-
-          // Show the Bible verses section
-          document.getElementById('reading-list').classList.add('hidden');
-          document.getElementById('bible-verses').classList.remove('hidden');
-        });
+      document.getElementById('morning-reading').addEventListener('click', async () => {
+        await loadVerses(dailyPlan.morning);
       });
+      document.getElementById('evening-reading').addEventListener('click', async () => {
+        await loadVerses(dailyPlan.evening);
+      });
+    }
+
+    // Function to load verses
+    async function loadVerses(reading) {
+      const book = reading.book;
+      const chapters = reading.chapters;
+
+      // Load the Bible book if not already loaded
+      if (!bibleData[book]) {
+        bibleData[book] = await loadBibleBook(book.toLowerCase());
+      }
+
+      // Display the verses with verse numbers
+      const verseTexts = getVerses(bibleData[book], chapters);
+      document.getElementById('verse-title').textContent = `${book} ${formatReading({ chapters })}`;
+      document.getElementById('verses').innerHTML = verseTexts
+        .map((v, i) => `<div class="verse"><span class="verse-number">${i + 1}</span> ${v}</div>`)
+        .join('');
+
+      // Show the Bible verses section
+      document.getElementById('reading-list').classList.add('hidden');
+      document.getElementById('bible-verses').classList.remove('hidden');
     }
 
     // Function to format the reading display

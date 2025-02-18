@@ -424,7 +424,7 @@
 
       // Display the list of books
       bookList.innerHTML = books
-        .map(book => `<div class="book-item" onclick="loadBook('${book}')">${book}</div>`)
+        .map(book => `<div class="book-item" onclick="loadBook('${book.book.english}')">${book.book.tamil} (${book.book.english})</div>`)
         .join('');
     }
 

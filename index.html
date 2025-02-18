@@ -285,8 +285,6 @@
     async function loadTamilBible(book, chapterRange, verseRange) {
       try {
         const [startChapter, endChapter] = chapterRange.split('-').map(c => parseInt(c));
-        const [startVerse, endVerse] = verseRange.split('-').map(v => parseInt(v));
-
         let allVerses = [];
 
         // Loop through each chapter in the range
@@ -296,11 +294,16 @@
           const chapterData = data.chapters.find(c => c.chapter === chapter.toString());
 
           if (chapterData) {
-            // Filter verses for the current chapter
-            const filteredVerses = chapterData.verses.filter(v => {
-              const verseNumber = parseInt(v.verse);
-              return verseNumber >= startVerse && verseNumber <= endVerse;
-            });
+            let filteredVerses = chapterData.verses;
+
+            // If verseRange is not empty or "all", filter verses
+            if (verseRange && verseRange !== "all") {
+              const [startVerse, endVerse] = verseRange.split('-').map(v => parseInt(v));
+              filteredVerses = chapterData.verses.filter(v => {
+                const verseNumber = parseInt(v.verse);
+                return verseNumber >= startVerse && verseNumber <= endVerse;
+              });
+            }
 
             // Add chapter number to verses for clarity
             const versesWithChapter = filteredVerses.map(v => ({
@@ -343,7 +346,7 @@
         dayElement.innerHTML = `
           <h2>தேதி: ${formatDate(todayPlan.date)}</h2>
           <div class="reading">
-            <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses}</p>
+            <p><strong>காலை:</strong> <span class="tamil">${todayPlan.morning.tamil}</span> ${todayPlan.morning.chapter}:${todayPlan.morning.verses || 'all'}</p>
             <div class="verses" id="morning-verses">
               ${morningVerses ? morningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
@@ -353,7 +356,7 @@
             </label>
           </div>
           <div class="reading">
-            <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses}</p>
+            <p><strong>மாலை:</strong> <span class="tamil">${todayPlan.evening.tamil}</span> ${todayPlan.evening.chapter}:${todayPlan.evening.verses || 'all'}</p>
             <div class="verses" id="evening-verses">
               ${eveningVerses ? eveningVerses.map(v => `<div class="verse"><strong>அதி. ${v.chapter}:${v.verse}</strong>: ${v.text}</div>`).join('') : 'வசனங்கள் கிடைக்கவில்லை.'}
             </div>
@@ -497,3 +500,4 @@
   </script>
 </body>
 </html>
+                                                              

@@ -1,32 +1,17 @@
 [
   {
-    "date": "2025-02-18",
+    "date": "2023-02-18",
     "morning": {
-      "book": "Mathew",
-      "tamil": "மத்தேயு",
-      "chapter": "28",
-      "verses": ""
+      "book": "Genesis",
+      "chapter": "1-3",  // Read chapters 1 to 3
+      "verses": "1-10",  // Verses 1-10 in each chapter
+      "tamil": "ஆதியாகமம்"
     },
     "evening": {
-      "book": "leviticus",
-      "tamil": "லேவியராகமம்",
-      "chapter": "21-22",
-      "verses": ""
-    }
-  },
-  {
-    "date": "2025-02-19",
-    "morning": {
-      "book": "genesis",
-      "tamil": "ஆதியாகமம்",
-      "chapter": "2",
-      "verses": "4-9"
-    },
-    "evening": {
-      "book": "psalms",
-      "tamil": "சங்கீதம்",
-      "chapter": "2",
-      "verses": "1-6"
+      "book": "Matthew",
+      "chapter": "1-2",  // Read chapters 1 to 2
+      "verses": "1-5",   // Verses 1-5 in each chapter
+      "tamil": "மத்தேயு"
     }
   }
 ]

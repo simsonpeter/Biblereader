@@ -61,6 +61,24 @@
       flex: 1;
       min-width: 150px;
     }
+    .chapter-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .chapter-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .chapter-buttons button:hover {
+      background-color: #0056b3;
+    }
     .search-container {
       margin-bottom: 20px;
       position: relative;
@@ -154,6 +172,10 @@
       <div class="navigation">
         <select id="book-dropdown"></select>
         <select id="chapter-dropdown"></select>
+      </div>
+      <div class="chapter-buttons">
+        <button id="prev-chapter">Previous Chapter</button>
+        <button id="next-chapter">Next Chapter</button>
       </div>
       <div class="full-bible-container">
         <div class="book-list" id="book-list"></div>
@@ -318,6 +340,31 @@
         }
       }, 100);
     }
+
+    // Next Chapter functionality
+    document.getElementById('next-chapter').addEventListener('click', async () => {
+      const bookData = await loadBibleBook(currentBook);
+      const totalChapters = bookData.chapters.length;
+
+      if (currentChapter < totalChapters) {
+        currentChapter++;
+        document.getElementById('chapter-dropdown').value = currentChapter;
+        await loadChapter(currentBook, currentChapter);
+      } else {
+        alert('This is the last chapter of the book.');
+      }
+    });
+
+    // Previous Chapter functionality
+    document.getElementById('prev-chapter').addEventListener('click', async () => {
+      if (currentChapter > 1) {
+        currentChapter--;
+        document.getElementById('chapter-dropdown').value = currentChapter;
+        await loadChapter(currentBook, currentChapter);
+      } else {
+        alert('This is the first chapter of the book.');
+      }
+    });
 
     // Text highlighting functions
     function highlightText(text, query) {

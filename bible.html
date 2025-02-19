@@ -44,6 +44,20 @@
       padding: 10px;
       background-color: #f9f9f9;
     }
+    .navigation {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .navigation select {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+    }
     .book-list {
       display: flex;
       flex-direction: column;
@@ -104,6 +118,12 @@
     <!-- Full Bible Content -->
     <div id="full-bible">
       <h3>Full Bible</h3>
+      <!-- Navigation Dropdowns -->
+      <div class="navigation">
+        <select id="book-dropdown"></select>
+        <select id="chapter-dropdown"></select>
+      </div>
+      <!-- Bible Content -->
       <div class="full-bible-container">
         <div class="book-list" id="book-list"></div>
       </div>
@@ -119,28 +139,44 @@
   </div>
 
   <script>
+    let books = []; // Store the list of Bible books
+    let currentBook = ''; // Track the current book
+    let currentChapter = 1; // Track the current chapter
+
     // Load and display the list of Bible books
     async function loadBooks() {
       const bookList = document.getElementById('book-list');
+      const bookDropdown = document.getElementById('book-dropdown');
       bookList.innerHTML = 'Loading...';
 
       // Fetch the list of Bible books
       const response = await fetch('tamil-bible/Books.json');
-      const books = await response.json();
+      books = await response.json();
 
-      // Display the list of books
-      bookList.innerHTML = books
-        .map(book => `<div class="book-item" onclick="loadBook('${book.book.english}')">${book.book.tamil} (${book.book.english})</div>`)
+      // Populate the book dropdown
+      bookDropdown.innerHTML = books
+        .map(book => `<option value="${book.book.english}">${book.book.tamil} (${book.book.english})</option>`)
         .join('');
+
+      // Load the first book by default
+      currentBook = books[0].book.english;
+      loadBook(currentBook);
     }
 
     // Load the selected book's chapters
     async function loadBook(book) {
       const bookData = await loadBibleBook(book);
+      const chapterDropdown = document.getElementById('chapter-dropdown');
       const bookList = document.getElementById('book-list');
-      bookList.innerHTML = bookData.chapters
-        .map((chapter, index) => `<div class="book-item" onclick="loadChapter('${book}', ${index + 1})">Chapter ${index + 1}</div>`)
+
+      // Populate the chapter dropdown
+      chapterDropdown.innerHTML = bookData.chapters
+        .map((chapter, index) => `<option value="${index + 1}">Chapter ${index + 1}</option>`)
         .join('');
+
+      // Load the first chapter by default
+      currentChapter = 1;
+      loadChapter(book, currentChapter);
     }
 
     // Load the selected chapter's verses
@@ -148,6 +184,8 @@
       const bookData = await loadBibleBook(book);
       const chapterData = bookData.chapters[chapter - 1];
       const bookList = document.getElementById('book-list');
+
+      // Display the verses
       bookList.innerHTML = chapterData.verses
         .map((verse, index) => `<div class="verse"><span class="verse-number">${index + 1}</span> ${verse.text}</div>`)
         .join('');
@@ -158,6 +196,17 @@
       const response = await fetch(`tamil-bible/${book}.json`);
       return response.json();
     }
+
+    // Event listeners for dropdowns
+    document.getElementById('book-dropdown').addEventListener('change', (e) => {
+      currentBook = e.target.value;
+      loadBook(currentBook);
+    });
+
+    document.getElementById('chapter-dropdown').addEventListener('change', (e) => {
+      currentChapter = e.target.value;
+      loadChapter(currentBook, currentChapter);
+    });
 
     // Load books when the page loads
     loadBooks();

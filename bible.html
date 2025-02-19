@@ -39,7 +39,7 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: calc(100vh - 120px); /* Full height minus header and tab bar */
+      height: calc(100vh - 120px);
       overflow-y: auto;
       padding: 10px;
       background-color: #f9f9f9;
@@ -49,7 +49,7 @@
       gap: 10px;
       margin-bottom: 20px;
       align-items: center;
-      flex-wrap: wrap; /* Allow dropdowns to wrap to the next line if needed */
+      flex-wrap: wrap;
     }
     .navigation select {
       padding: 10px;
@@ -58,8 +58,8 @@
       border: 1px solid #ccc;
       background-color: #fff;
       cursor: pointer;
-      flex: 1; /* Allow dropdowns to grow and shrink */
-      min-width: 150px; /* Minimum width for dropdowns */
+      flex: 1;
+      min-width: 150px;
     }
     .search-container {
       margin-bottom: 20px;
@@ -74,17 +74,17 @@
     }
     .search-results {
       position: fixed;
-      top: 120px; /* Below the header */
+      top: 120px;
       left: 0;
       right: 0;
-      bottom: 60px; /* Above the tab bar */
+      bottom: 60px;
       background-color: #fff;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
-      z-index: 1000; /* Ensure it appears above other content */
+      z-index: 1000;
       padding: 10px;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .search-results div {
       padding: 10px;
@@ -98,17 +98,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-    }
-    .book-item {
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .book-item:hover {
-      background-color: #e0e0e0;
     }
     .verse {
       font-size: 16px;
@@ -124,7 +113,7 @@
       margin-right: 5px;
     }
     .highlight {
-      background-color: yellow; /* Highlight matching text */
+      background-color: yellow;
     }
     .tab-bar {
       display: flex;
@@ -154,27 +143,22 @@
   </div>
 
   <div class="container">
-    <!-- Full Bible Content -->
     <div id="full-bible">
       <h3>Full Bible</h3>
-      <!-- Search Bar -->
       <div class="search-container">
         <input type="text" id="search-input" placeholder="Search for any word (e.g., grace, faith, love)">
         <div class="search-results" id="search-results"></div>
       </div>
-      <!-- Navigation Dropdowns -->
       <div class="navigation">
         <select id="book-dropdown"></select>
         <select id="chapter-dropdown"></select>
       </div>
-      <!-- Bible Content -->
       <div class="full-bible-container">
         <div class="book-list" id="book-list"></div>
       </div>
     </div>
   </div>
 
-  <!-- Tab Bar -->
   <div class="tab-bar">
     <a href="index.html"><button>Bible Reader</button></a>
     <a href="bible.html"><button>Full Bible</button></a>
@@ -183,57 +167,45 @@
   </div>
 
   <script>
-    let books = []; // Store the list of Bible books
-    let currentBook = ''; // Track the current book
-    let currentChapter = 1; // Track the current chapter
-    let allVerses = []; // Store all verses for searching
+    let books = [];
+    let currentBook = '';
+    let currentChapter = 1;
+    let allVerses = [];
 
-    // Load and display the list of Bible books
+    // Load initial books
     async function loadBooks() {
       const bookList = document.getElementById('book-list');
       const bookDropdown = document.getElementById('book-dropdown');
       bookList.innerHTML = 'Loading...';
 
-      // Fetch the list of Bible books
       const response = await fetch('tamil-bible/Books.json');
       books = await response.json();
 
-      // Populate the book dropdown
       bookDropdown.innerHTML = books
         .map(book => `<option value="${book.book.english}">${book.book.tamil} (${book.book.english})</option>`)
         .join('');
 
-      // Load the first book by default
       currentBook = books[0].book.english;
-      loadBook(currentBook);
-
-      // Load all verses for full-Bible search
+      await loadBook(currentBook);
       await loadAllVerses();
     }
 
-    // Load the selected book's chapters
+    // Load book chapters
     async function loadBook(book) {
       const bookData = await loadBibleBook(book);
       const chapterDropdown = document.getElementById('chapter-dropdown');
-      const bookList = document.getElementById('book-list');
-
-      // Populate the chapter dropdown
+      
       chapterDropdown.innerHTML = bookData.chapters
-        .map((chapter, index) => `<option value="${index + 1}">Chapter ${index + 1}</option>`)
+        .map((_, index) => `<option value="${index + 1}">Chapter ${index + 1}</option>`)
         .join('');
-
-      // Load the first chapter by default
-      currentChapter = 1;
-      loadChapter(book, currentChapter);
     }
 
-    // Load the selected chapter's verses
+    // Load chapter verses
     async function loadChapter(book, chapter) {
       const bookData = await loadBibleBook(book);
       const chapterData = bookData.chapters[chapter - 1];
       const bookList = document.getElementById('book-list');
 
-      // Display the verses
       bookList.innerHTML = chapterData.verses
         .map((verse, index) => `
           <div class="verse" data-book="${book}" data-chapter="${chapter}" data-verse="${index + 1}">
@@ -243,13 +215,13 @@
         .join('');
     }
 
-    // Function to load a Bible book from the tamil-bible folder
+    // Load single book data
     async function loadBibleBook(book) {
       const response = await fetch(`tamil-bible/${book}.json`);
       return response.json();
     }
 
-    // Function to load all verses for full-Bible search
+    // Preload all verses for search
     async function loadAllVerses() {
       allVerses = [];
       for (const book of books) {
@@ -258,29 +230,16 @@
           const chapter = chapterIndex + 1;
           const chapterData = bookData.chapters[chapterIndex];
           for (let verseIndex = 0; verseIndex < chapterData.verses.length; verseIndex++) {
-            const verseNumber = verseIndex + 1;
-            const verseText = chapterData.verses[verseIndex].text;
             allVerses.push({
               book: book.book.english,
               chapter,
-              verseNumber,
-              text: verseText,
+              verseNumber: verseIndex + 1,
+              text: chapterData.verses[verseIndex].text
             });
           }
         }
       }
     }
-
-    // Event listeners for dropdowns
-    document.getElementById('book-dropdown').addEventListener('change', (e) => {
-      currentBook = e.target.value;
-      loadBook(currentBook);
-    });
-
-    document.getElementById('chapter-dropdown').addEventListener('change', (e) => {
-      currentChapter = e.target.value;
-      loadChapter(currentBook, currentChapter);
-    });
 
     // Search functionality
     const searchInput = document.getElementById('search-input');
@@ -288,98 +247,97 @@
 
     searchInput.addEventListener('input', async (e) => {
       const query = e.target.value.trim().toLowerCase();
-      searchResults.innerHTML = ''; // Clear previous results
+      searchResults.innerHTML = '';
 
       if (query.length < 2) {
-        // Clear highlights if the query is too short
         clearHighlights();
-        searchResults.style.display = 'none'; // Hide search results
+        searchResults.style.display = 'none';
         return;
       }
 
-      // Search all verses for the query
-      const matchingVerses = allVerses.filter(verse =>
+      const matchingVerses = allVerses.filter(verse => 
         verse.text.toLowerCase().includes(query)
       );
 
       if (matchingVerses.length > 0) {
-        // Display matching verses
-        searchResults.innerHTML = matchingVerses
-          .map(verse => `
-            <div onclick="navigateToVerse('${verse.book}', ${verse.chapter}, ${verse.verseNumber})">
-              <strong>${verse.book} ${verse.chapter}:${verse.verseNumber}</strong><br>
-              ${highlightText(verse.text, query)}
-            </div>
-          `)
-          .join('');
-
-        // Show search results in full screen
+        searchResults.innerHTML = matchingVerses.map(verse => `
+          <div onclick="navigateToVerse('${verse.book}', ${verse.chapter}, ${verse.verseNumber})">
+            <strong>${verse.book} ${verse.chapter}:${verse.verseNumber}</strong><br>
+            ${highlightText(verse.text, query)}
+          </div>
+        `).join('');
+        
         searchResults.style.display = 'block';
-
-        // Highlight matching text in the displayed verses
         highlightVerses(query);
       } else {
         searchResults.innerHTML = '<div>No results found.</div>';
-        searchResults.style.display = 'block'; // Show "No results found" message
+        searchResults.style.display = 'block';
         clearHighlights();
       }
     });
 
-    // Function to highlight matching text in a string
-    function highlightText(text, query) {
-      const regex = new RegExp(`(${query})`, 'gi');
-      return text.replace(regex, '<span class="highlight">$1</span>');
-    }
-
-    // Function to highlight matching verses
-    function highlightVerses(query) {
-      const verses = document.querySelectorAll('.verse');
-      verses.forEach(verse => {
-        const verseText = verse.textContent.toLowerCase();
-        if (verseText.includes(query)) {
-          verse.innerHTML = verse.innerHTML.replace(
-            new RegExp(`(${query})`, 'gi'),
-            '<span class="highlight">$1</span>'
-          );
-        }
-      });
-    }
-
-    // Function to clear highlights
-    function clearHighlights() {
-      const highlights = document.querySelectorAll('.highlight');
-      highlights.forEach(highlight => {
-        highlight.outerHTML = highlight.innerHTML; // Remove highlight
-      });
-    }
-
-    // Function to navigate to a specific verse
-    function navigateToVerse(book, chapter, verse) {
-      // Update dropdowns
+    // Navigation to verse (FIXED)
+    async function navigateToVerse(book, chapter, verse) {
+      // Update dropdown selections
       document.getElementById('book-dropdown').value = book;
       document.getElementById('chapter-dropdown').value = chapter;
 
-      // Load the book and chapter
-      loadBook(book);
-      loadChapter(book, chapter);
+      // Load book and wait for completion
+      await loadBook(book);
+      
+      // Load chapter and wait for completion
+      await loadChapter(book, chapter);
 
       // Hide search results
       searchResults.style.display = 'none';
 
-      // Scroll to the verse
+      // Scroll to verse after short delay
       setTimeout(() => {
         const verseElement = document.querySelector(`.verse[data-verse="${verse}"]`);
         if (verseElement) {
           verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          verseElement.style.backgroundColor = '#f0f8ff'; // Highlight the verse
+          verseElement.style.backgroundColor = '#f0f8ff';
           setTimeout(() => {
-            verseElement.style.backgroundColor = '#fff'; // Remove highlight after 2 seconds
+            verseElement.style.backgroundColor = '#fff';
           }, 2000);
         }
-      }, 500); // Wait for the content to load
+      }, 100);
     }
 
-    // Load books when the page loads
+    // Text highlighting functions
+    function highlightText(text, query) {
+      return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+    }
+
+    function highlightVerses(query) {
+      document.querySelectorAll('.verse').forEach(verse => {
+        verse.innerHTML = verse.textContent.replace(
+          new RegExp(`(${query})`, 'gi'),
+          '<span class="highlight">$1</span>'
+        );
+      });
+    }
+
+    function clearHighlights() {
+      document.querySelectorAll('.highlight').forEach(h => {
+        h.outerHTML = h.innerHTML;
+      });
+    }
+
+    // Event listeners for dropdowns
+    document.getElementById('book-dropdown').addEventListener('change', async (e) => {
+      currentBook = e.target.value;
+      await loadBook(currentBook);
+      currentChapter = 1;
+      await loadChapter(currentBook, currentChapter);
+    });
+
+    document.getElementById('chapter-dropdown').addEventListener('change', async (e) => {
+      currentChapter = e.target.value;
+      await loadChapter(currentBook, currentChapter);
+    });
+
+    // Initialize
     loadBooks();
   </script>
 </body>

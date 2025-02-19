@@ -73,12 +73,18 @@
       max-width: 400px;
     }
     .search-results {
-      margin-top: 10px;
+      position: fixed;
+      top: 120px; /* Below the header */
+      left: 0;
+      right: 0;
+      bottom: 60px; /* Above the tab bar */
       background-color: #fff;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      max-height: 200px;
       overflow-y: auto;
+      z-index: 1000; /* Ensure it appears above other content */
+      padding: 10px;
+      display: none; /* Hidden by default */
     }
     .search-results div {
       padding: 10px;
@@ -287,6 +293,7 @@
       if (query.length < 2) {
         // Clear highlights if the query is too short
         clearHighlights();
+        searchResults.style.display = 'none'; // Hide search results
         return;
       }
 
@@ -306,10 +313,14 @@
           `)
           .join('');
 
+        // Show search results in full screen
+        searchResults.style.display = 'block';
+
         // Highlight matching text in the displayed verses
         highlightVerses(query);
       } else {
         searchResults.innerHTML = '<div>No results found.</div>';
+        searchResults.style.display = 'block'; // Show "No results found" message
         clearHighlights();
       }
     });
@@ -351,6 +362,9 @@
       // Load the book and chapter
       loadBook(book);
       loadChapter(book, chapter);
+
+      // Hide search results
+      searchResults.style.display = 'none';
 
       // Scroll to the verse
       setTimeout(() => {

@@ -197,9 +197,20 @@
       const bookData = await loadBibleBook(book);
       const chapterDropdown = document.getElementById('chapter-dropdown');
       
-      chapterDropdown.innerHTML = bookData.chapters
-        .map((_, index) => `<option value="${index + 1}">Chapter ${index + 1}</option>`)
-        .join('');
+      // Clear existing options
+      chapterDropdown.innerHTML = '';
+
+      // Populate the chapter dropdown based on the selected book
+      bookData.chapters.forEach((_, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = `Chapter ${index + 1}`;
+        chapterDropdown.appendChild(option);
+      });
+
+      // Set the current chapter to 1
+      currentChapter = 1;
+      await loadChapter(book, currentChapter);
     }
 
     // Load chapter verses
@@ -283,11 +294,11 @@
       // Update the book dropdown
       document.getElementById('book-dropdown').value = book;
 
-      // Update the chapter dropdown
-      document.getElementById('chapter-dropdown').value = chapter;
-
       // Load the book and wait for it to complete
       await loadBook(book);
+
+      // Update the chapter dropdown
+      document.getElementById('chapter-dropdown').value = chapter;
 
       // Now load the chapter (after the book is fully loaded)
       await loadChapter(book, chapter);

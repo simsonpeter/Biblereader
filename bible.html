@@ -200,6 +200,9 @@
       // Load the first book by default
       currentBook = books[0].book.english;
       loadBook(currentBook);
+
+      // Load all verses for full-Bible search
+      await loadAllVerses();
     }
 
     // Load the selected book's chapters
@@ -224,14 +227,6 @@
       const chapterData = bookData.chapters[chapter - 1];
       const bookList = document.getElementById('book-list');
 
-      // Store all verses for searching
-      allVerses = chapterData.verses.map((verse, index) => ({
-        book,
-        chapter,
-        verseNumber: index + 1,
-        text: verse.text,
-      }));
-
       // Display the verses
       bookList.innerHTML = chapterData.verses
         .map((verse, index) => `
@@ -246,6 +241,28 @@
     async function loadBibleBook(book) {
       const response = await fetch(`tamil-bible/${book}.json`);
       return response.json();
+    }
+
+    // Function to load all verses for full-Bible search
+    async function loadAllVerses() {
+      allVerses = [];
+      for (const book of books) {
+        const bookData = await loadBibleBook(book.book.english);
+        for (let chapterIndex = 0; chapterIndex < bookData.chapters.length; chapterIndex++) {
+          const chapter = chapterIndex + 1;
+          const chapterData = bookData.chapters[chapterIndex];
+          for (let verseIndex = 0; verseIndex < chapterData.verses.length; verseIndex++) {
+            const verseNumber = verseIndex + 1;
+            const verseText = chapterData.verses[verseIndex].text;
+            allVerses.push({
+              book: book.book.english,
+              chapter,
+              verseNumber,
+              text: verseText,
+            });
+          }
+        }
+      }
     }
 
     // Event listeners for dropdowns

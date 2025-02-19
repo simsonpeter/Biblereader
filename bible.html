@@ -61,6 +61,33 @@
       flex: 1; /* Allow dropdowns to grow and shrink */
       min-width: 150px; /* Minimum width for dropdowns */
     }
+    .search-container {
+      margin-bottom: 20px;
+    }
+    .search-container input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-width: 400px;
+    }
+    .search-results {
+      margin-top: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .search-results div {
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .search-results div:hover {
+      background-color: #e0e0e0;
+    }
     .book-list {
       display: flex;
       flex-direction: column;
@@ -121,6 +148,11 @@
     <!-- Full Bible Content -->
     <div id="full-bible">
       <h3>Full Bible</h3>
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for a verse (e.g., John 3:16)">
+        <div class="search-results" id="search-results"></div>
+      </div>
       <!-- Navigation Dropdowns -->
       <div class="navigation">
         <select id="book-dropdown"></select>
@@ -210,6 +242,80 @@
       currentChapter = e.target.value;
       loadChapter(currentBook, currentChapter);
     });
+
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', async (e) => {
+      const query = e.target.value.trim();
+      if (query.length < 3) {
+        searchResults.innerHTML = ''; // Clear results if query is too short
+        return;
+      }
+
+      // Parse the query (e.g., "John 3:16")
+      const [bookName, chapterVerse] = query.split(' ');
+      const [chapter, verse] = chapterVerse?.split(':') || [];
+
+      if (!bookName || !chapter || !verse) {
+        searchResults.innerHTML = '<div>Invalid format. Use "Book Chapter:Verse" (e.g., John 3:16).</div>';
+        return;
+      }
+
+      // Find the book
+      const book = books.find(b => b.book.english.toLowerCase() === bookName.toLowerCase());
+      if (!book) {
+        searchResults.innerHTML = '<div>Book not found.</div>';
+        return;
+      }
+
+      // Load the book and chapter
+      const bookData = await loadBibleBook(book.book.english);
+      const chapterData = bookData.chapters[chapter - 1];
+      if (!chapterData) {
+        searchResults.innerHTML = '<div>Chapter not found.</div>';
+        return;
+      }
+
+      // Find the verse
+      const verseText = chapterData.verses[verse - 1]?.text;
+      if (!verseText) {
+        searchResults.innerHTML = '<div>Verse not found.</div>';
+        return;
+      }
+
+      // Display the search result
+      searchResults.innerHTML = `
+        <div onclick="navigateToVerse('${book.book.english}', ${chapter}, ${verse})">
+          <strong>${book.book.tamil} ${chapter}:${verse}</strong><br>
+          ${verseText}
+        </div>
+      `;
+    });
+
+    // Function to navigate to a specific verse
+    function navigateToVerse(book, chapter, verse) {
+      // Update dropdowns
+      document.getElementById('book-dropdown').value = book;
+      document.getElementById('chapter-dropdown').value = chapter;
+
+      // Load the book and chapter
+      loadBook(book);
+      loadChapter(book, chapter);
+
+      // Scroll to the verse
+      setTimeout(() => {
+        const verseElement = document.querySelector(`.verse:nth-child(${verse})`);
+        if (verseElement) {
+          verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          verseElement.style.backgroundColor = '#f0f8ff'; // Highlight the verse
+          setTimeout(() => {
+            verseElement.style.backgroundColor = '#fff'; // Remove highlight after 2 seconds
+          }, 2000);
+        }
+      }, 500); // Wait for the content to load
+    }
 
     // Load books when the page loads
     loadBooks();

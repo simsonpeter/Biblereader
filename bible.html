@@ -278,20 +278,22 @@
 
     // Navigation to verse (FIXED)
     async function navigateToVerse(book, chapter, verse) {
-      // Update dropdown selections
+      // Update the book dropdown
       document.getElementById('book-dropdown').value = book;
+
+      // Update the chapter dropdown
       document.getElementById('chapter-dropdown').value = chapter;
 
-      // Load book and wait for completion
+      // Load the book and wait for it to complete
       await loadBook(book);
-      
-      // Load chapter and wait for completion
+
+      // Now load the chapter (after the book is fully loaded)
       await loadChapter(book, chapter);
 
       // Hide search results
       searchResults.style.display = 'none';
 
-      // Scroll to verse after short delay
+      // Scroll to the verse
       setTimeout(() => {
         const verseElement = document.querySelector(`.verse[data-verse="${verse}"]`);
         if (verseElement) {

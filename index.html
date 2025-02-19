@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Year Bible Reading App</title>
+  <title>One Year Bible Reading Plan</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -146,31 +146,6 @@
     .hidden {
       display: none;
     }
-    .full-bible-container {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .book-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .book-item {
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .book-item:hover {
-      background-color: #e0e0e0;
-    }
   </style>
 </head>
 <body>
@@ -206,22 +181,14 @@
       <div class="verse-container" id="verses"></div>
       <button class="back-button" id="back-button">Back to Reading List</button>
     </div>
-
-    <!-- Full Bible (hidden by default) -->
-    <div id="full-bible" class="hidden">
-      <h3>Full Bible</h3>
-      <div class="full-bible-container">
-        <div class="book-list" id="book-list"></div>
-      </div>
-    </div>
   </div>
 
   <!-- Tab Bar -->
   <div class="tab-bar">
-    <button onclick="showBibleReader()">Bible Reader</button>
-    <button onclick="showFullBible()">Full Bible</button>
-    <button onclick="showSongBook()">Song Book</button>
-    <button onclick="showAboutUs()">About Us</button>
+    <a href="index.html"><button>Bible Reader</button></a>
+    <a href="bible.html"><button>Full Bible</button></a>
+    <a href="songs.html"><button>Song Book</button></a>
+    <a href="about.html"><button>About Us</button></a>
   </div>
 
   <script>
@@ -299,7 +266,7 @@
 
       // Load the Bible book if not already loaded
       if (!bibleData[book]) {
-        bibleData[book] = await loadBibleBook(book.toLowerCase());
+        bibleData[book] = await loadBibleBook(book);
       }
 
       // Display the verses with verse numbers
@@ -394,69 +361,6 @@
       document.getElementById('evening-reading').addEventListener('click', async () => {
         await loadVerses(dailyPlan.evening);
       });
-    }
-
-    // Tab Bar Functions
-    function showBibleReader() {
-      // Show Bible Reader content
-      document.getElementById('calendar').classList.remove('hidden');
-      document.getElementById('date-title').classList.remove('hidden');
-      document.getElementById('reading-container').classList.remove('hidden');
-      document.getElementById('bible-verses').classList.add('hidden');
-      document.getElementById('full-bible').classList.add('hidden');
-    }
-
-    async function showFullBible() {
-      // Show Full Bible content
-      document.getElementById('calendar').classList.add('hidden');
-      document.getElementById('date-title').classList.add('hidden');
-      document.getElementById('reading-container').classList.add('hidden');
-      document.getElementById('bible-verses').classList.add('hidden');
-      document.getElementById('full-bible').classList.remove('hidden');
-
-      // Load and display the list of Bible books
-      const bookList = document.getElementById('book-list');
-      bookList.innerHTML = 'Loading...';
-
-      // Fetch the list of Bible books
-      const response = await fetch('tamil-bible/books.json'); // Assuming you have a books.json file
-      const books = await response.json();
-
-      // Display the list of books
-      bookList.innerHTML = books
-        .map(book => `<div class="book-item" onclick="loadBook('${book.book.english}')">${book.book.tamil} (${book.book.english})</div>`)
-        .join('');
-    }
-
-    async function loadBook(book) {
-      // Load the selected book
-      const bookData = await loadBibleBook(book.toLowerCase());
-
-      // Display the list of chapters
-      const bookList = document.getElementById('book-list');
-      bookList.innerHTML = bookData.chapters
-        .map((chapter, index) => `<div class="book-item" onclick="loadChapter('${book}', ${index + 1})">Chapter ${index + 1}</div>`)
-        .join('');
-    }
-
-    async function loadChapter(book, chapter) {
-      // Load the selected chapter
-      const bookData = await loadBibleBook(book.toLowerCase());
-      const chapterData = bookData.chapters[chapter - 1];
-
-      // Display the verses
-      const bookList = document.getElementById('book-list');
-      bookList.innerHTML = chapterData.verses
-        .map((verse, index) => `<div class="verse"><span class="verse-number">${index + 1}</span> ${verse.text}</div>`)
-        .join('');
-    }
-
-    function showSongBook() {
-      alert('Song Book feature coming soon!');
-    }
-
-    function showAboutUs() {
-      alert('About Us feature coming soon!');
     }
   </script>
 </body>

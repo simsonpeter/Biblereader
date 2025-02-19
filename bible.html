@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Bible</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+    .container {
+      flex: 1;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .full-bible-container {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .book-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .book-item {
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .book-item:hover {
+      background-color: #e0e0e0;
+    }
+    .verse {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .verse-number {
+      font-weight: bold;
+      color: #007bff;
+      margin-right: 5px;
+    }
+    .tab-bar {
+      display: flex;
+      justify-content: space-around;
+      background-color: #007bff;
+      padding: 10px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .tab-bar button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px;
+      transition: background-color 0.3s ease;
+    }
+    .tab-bar button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Full Bible</h1>
+  </div>
+
+  <div class="container">
+    <!-- Full Bible Content -->
+    <div id="full-bible">
+      <h3>Full Bible</h3>
+      <div class="full-bible-container">
+        <div class="book-list" id="book-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <a href="index.html"><button>Bible Reader</button></a>
+    <a href="bible.html"><button>Full Bible</button></a>
+    <a href="songs.html"><button>Song Book</button></a>
+    <a href="about.html"><button>About Us</button></a>
+  </div>
+
+  <script>
+    // Load and display the list of Bible books
+    async function loadBooks() {
+      const bookList = document.getElementById('book-list');
+      bookList.innerHTML = 'Loading...';
+
+      // Fetch the list of Bible books
+      const response = await fetch('tamil-bible/Books.json');
+      const books = await response.json();
+
+      // Display the list of books
+      bookList.innerHTML = books
+        .map(book => `<div class="book-item" onclick="loadBook('${book.book.english}')">${book.book.tamil} (${book.book.english})</div>`)
+        .join('');
+    }
+
+    // Load the selected book's chapters
+    async function loadBook(book) {
+      const bookData = await loadBibleBook(book);
+      const bookList = document.getElementById('book-list');
+      bookList.innerHTML = bookData.chapters
+        .map((chapter, index) => `<div class="book-item" onclick="loadChapter('${book}', ${index + 1})">Chapter ${index + 1}</div>`)
+        .join('');
+    }
+
+    // Load the selected chapter's verses
+    async function loadChapter(book, chapter) {
+      const bookData = await loadBibleBook(book);
+      const chapterData = bookData.chapters[chapter - 1];
+      const bookList = document.getElementById('book-list');
+      bookList.innerHTML = chapterData.verses
+        .map((verse, index) => `<div class="verse"><span class="verse-number">${index + 1}</span> ${verse.text}</div>`)
+        .join('');
+    }
+
+    // Function to load a Bible book from the tamil-bible folder
+    async function loadBibleBook(book) {
+      const response = await fetch(`tamil-bible/${book}.json`);
+      return response.json();
+    }
+
+    // Load books when the page loads
+    loadBooks();
+  </script>
+</body>
+</html>

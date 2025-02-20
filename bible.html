@@ -69,6 +69,8 @@
     .chapter-buttons {
       display: flex;
       gap: 10px;
+      justify-content: center; /* Center buttons horizontally */
+      width: 100%; /* Ensure buttons take full width */
       margin-bottom: 10px;
     }
     .chapter-buttons button {
@@ -80,6 +82,8 @@
       color: #fff;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      flex: 1; /* Make buttons equal width */
+      max-width: 150px; /* Limit button width */
     }
     .chapter-buttons button:hover {
       background-color: #0056b3;

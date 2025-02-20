@@ -313,6 +313,10 @@
 
     // Navigation to verse (FIXED)
     async function navigateToVerse(book, chapter, verse) {
+      // Update the current book and chapter
+      currentBook = book;
+      currentChapter = chapter;
+
       // Update the book dropdown
       document.getElementById('book-dropdown').value = book;
 

@@ -3,55 +3,55 @@
     "date": "2025-01-01",
     "morning": {
       "book": "Genesis",
-      "chapters": "1:1-5" // Verses 1 to 5 of Genesis 1
+      "chapters": "1:1-5" 
     },
     "evening": {
       "book": "Psalms",
-      "chapters": "1" // Whole chapter of Psalms 1
+      "chapters": "1"
     }
   },
   {
     "date": "2025-01-02",
     "morning": {
       "book": "Genesis",
-      "chapters": "1:6-10" // Verses 6 to 10 of Genesis 1
+      "chapters": "1:6-10" 
     },
     "evening": {
       "book": "Psalms",
-      "chapters": "2:1-3" // Verses 1 to 3 of Psalms 2
+      "chapters": "2:1-3"
     }
   },
   {
     "date": "2025-01-03",
     "morning": {
       "book": "Genesis",
-      "chapters": "1:11,1:13,1:15" // Specific verses of Genesis 1
+      "chapters": "1:11,1:13,1:15"
     },
     "evening": {
       "book": "Psalms",
-      "chapters": "3" // Whole chapter of Psalms 3
+      "chapters": "3"
     }
   },
   {
     "date": "2025-01-04",
     "morning": {
       "book": "Mark",
-      "chapters": "5:21-41" // Verses 21 to 41 of Mark 5
+      "chapters": "5:21-41"
     },
     "evening": {
       "book": "Psalms",
-      "chapters": "4" // Whole chapter of Psalms 4
+      "chapters": "4" 
     }
   },
   {
     "date": "2025-01-05",
     "morning": {
       "book": "Mark",
-      "chapters": "5:1-20" // Verses 1 to 20 of Mark 5
+      "chapters": "5:1-20"
     },
     "evening": {
       "book": "Psalms",
-      "chapters": "5" // Whole chapter of Psalms 5
+      "chapters": "5" 
     }
   }
 ]

@@ -13,15 +13,28 @@
     }
   },
   {
-    "date": "2025-02-18",
+    "date": "2025-02-25",
     "morning": {
-      "book": "Genesis",
-      "chapters": "1",
-      "verses": "1,2,3"
+      "book": "Mark",
+      "chapters": "5",
+      "verses": "1-20"
     },
     "evening": {
-      "book": "Genesis",
-      "chapters": "2",
+      "book": "Numbers",
+      "chapters": "9-11",
+      "verses": ""
+    }
+  },
+  {
+    "date": "2025-02-26",
+    "morning": {
+      "book": "Mark",
+      "chapters": "5",
+      "verses": "21-43"
+    },
+    "evening": {
+      "book": "Numbers",
+      "chapters": "12-14",
       "verses": ""
     }
   },

@@ -24,5 +24,18 @@
       "chapters": "5",
       "verses": "1,2,3"
     }
-  }
+  },
+    {
+    "date": "2025-02-20",
+    "morning": {
+      "book": "மாற்கு",
+      "chapters": "2",
+      "verses": ""
+    },
+    "evening": {
+      "book": "லேவி",
+      "chapters": "26,27",
+      "verses": ""
+    }
+  },
 ]

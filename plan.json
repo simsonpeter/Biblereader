@@ -1,5 +1,18 @@
 [
   {
+    "date": "2025-02-24",
+    "morning": {
+      "book": "Mark",
+      "chapters": "4",
+      "verses": "21-41"
+    },
+    "evening": {
+      "book": "Numbers",
+      "chapters": "7,8",
+      "verses": ""
+    }
+  },
+  {
     "date": "2025-02-18",
     "morning": {
       "book": "Genesis",

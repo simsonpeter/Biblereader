@@ -330,37 +330,37 @@
 
       // Check if the chapters field contains a colon (custom verses)
       if (chapters.includes(':')) {
-        // Handle custom verses (e.g., "1:1-5" or "1:1,1:3,1:5")
+        // Handle custom verses (e.g., "5:21-41" or "5:21,5:23,5:25")
         const [chapter, verses] = chapters.split(':');
-        const chapterIndex = bookData.chapters.findIndex(ch => ch.chapter === chapter); // Find chapter by string
+        const chapterData = bookData.chapters.find(ch => ch.chapter === chapter); // Find chapter by string
 
-        if (chapterIndex === -1) {
+        if (!chapterData) {
           console.error(`Chapter ${chapter} not found in ${bookData.book.tamil}`);
           return result;
         }
 
         if (verses.includes('-')) {
-          // Handle verse range (e.g., "1:1-5")
+          // Handle verse range (e.g., "21-41")
           const [startVerse, endVerse] = verses.split('-').map(v => v.trim());
           for (let i = parseInt(startVerse); i <= parseInt(endVerse); i++) {
-            const verse = bookData.chapters[chapterIndex].verses.find(v => v.verse === i.toString());
+            const verse = chapterData.verses.find(v => v.verse === i.toString());
             if (verse) {
               result.push(verse.text);
             }
           }
         } else if (verses.includes(',')) {
-          // Handle individual verses (e.g., "1:1,1:3,1:5")
+          // Handle individual verses (e.g., "21,23,25")
           const verseList = verses.split(',').map(v => v.trim());
           verseList.forEach(verseNumber => {
-            const verse = bookData.chapters[chapterIndex].verses.find(v => v.verse === verseNumber);
+            const verse = chapterData.verses.find(v => v.verse === verseNumber);
             if (verse) {
               result.push(verse.text);
             }
           });
         } else {
-          // Handle single verse (e.g., "1:1")
+          // Handle single verse (e.g., "21")
           const verseNumber = verses.trim();
-          const verse = bookData.chapters[chapterIndex].verses.find(v => v.verse === verseNumber);
+          const verse = chapterData.verses.find(v => v.verse === verseNumber);
           if (verse) {
             result.push(verse.text);
           }
@@ -369,9 +369,9 @@
         // Handle whole chapter(s)
         const chapterList = chapters.split(',').map(ch => ch.trim());
         chapterList.forEach(chapter => {
-          const chapterIndex = bookData.chapters.findIndex(ch => ch.chapter === chapter);
-          if (chapterIndex !== -1) {
-            bookData.chapters[chapterIndex].verses.forEach(verse => {
+          const chapterData = bookData.chapters.find(ch => ch.chapter === chapter);
+          if (chapterData) {
+            chapterData.verses.forEach(verse => {
               result.push(verse.text);
             });
           }

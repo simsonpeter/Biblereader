@@ -341,26 +341,26 @@
 
         if (verses.includes('-')) {
           // Handle verse range (e.g., "21-41")
-          const [startVerse, endVerse] = verses.split('-').map(v => v.trim());
-          for (let i = parseInt(startVerse); i <= parseInt(endVerse); i++) {
-            const verse = chapterData.verses.find(v => v.verse === i.toString());
+          const [startVerse, endVerse] = verses.split('-').map(v => parseInt(v.trim()));
+          for (let i = startVerse; i <= endVerse; i++) {
+            const verse = chapterData.verses.find(v => parseInt(v.verse) === i);
             if (verse) {
               result.push(verse.text);
             }
           }
         } else if (verses.includes(',')) {
           // Handle individual verses (e.g., "21,23,25")
-          const verseList = verses.split(',').map(v => v.trim());
+          const verseList = verses.split(',').map(v => parseInt(v.trim()));
           verseList.forEach(verseNumber => {
-            const verse = chapterData.verses.find(v => v.verse === verseNumber);
+            const verse = chapterData.verses.find(v => parseInt(v.verse) === verseNumber);
             if (verse) {
               result.push(verse.text);
             }
           });
         } else {
           // Handle single verse (e.g., "21")
-          const verseNumber = verses.trim();
-          const verse = chapterData.verses.find(v => v.verse === verseNumber);
+          const verseNumber = parseInt(verses.trim());
+          const verse = chapterData.verses.find(v => parseInt(v.verse) === verseNumber);
           if (verse) {
             result.push(verse.text);
           }

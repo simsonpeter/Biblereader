@@ -3,47 +3,47 @@
     "date": "2025-02-24",
     "morning": {
       "book": "Mark",
-      "chapters": "4",
-      "verses": "21-41"
+      "chapters": "4:21-41"
+      
     },
     "evening": {
       "book": "Numbers",
-      "chapters": "7,8",
-      "verses": ""
+      "chapters": "7,8"
+      
     }
   },
   {
     "date": "2025-02-25",
     "morning": {
       "book": "Mark",
-      "chapters": "5",
-      "verses": "1-20"
+      "chapters": "5:1-20"
+      
     },
     "evening": {
       "book": "Numbers",
-      "chapters": "9-11",
-      "verses": ""
+      "chapters": "9-11"
+      
     }
   },
   {
     "date": "2025-02-26",
     "morning": {
       "book": "Mark",
-      "chapters": "5",
-      "verses": "21-43"
+      "chapters": "5:21-41"
+      
     },
     "evening": {
       "book": "Numbers",
-      "chapters": "12-14",
-      "verses": ""
+      "chapters": "12-14"
+      
     }
   },
   {
     "date": "2025-02-19",
     "morning": {
       "book": "Genesis",
-      "chapters": "3-4",
-      "verses": "all"
+      "chapters": "3-4"
+      
     },
     "evening": {
       "book": "Genesis",
